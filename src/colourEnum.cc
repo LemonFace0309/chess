@@ -1,0 +1,4 @@
+enum ColourEnum {
+  White,
+  Black
+};

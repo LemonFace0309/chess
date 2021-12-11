@@ -1,12 +1,21 @@
 #include <iostream>
-#include "playerEnum.h"
+#include <memory>
+#include "map"
+
+#include "board.h"
+#include "playerEnum.cc"
+#include "colourEnum.cc"
 
 class Game {
   private:
     Player players[2];
+    std::unique_ptr<Board> board;
+    bool isWhiteTurn;
+    map<string, ColourEnum> stringToColourEnum;
   public:
     Game();
     Game(Player p1, Player p2);
     void start();
     void setup();
+    void changeTurn(std::string colour);
 };

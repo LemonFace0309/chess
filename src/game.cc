@@ -1,9 +1,21 @@
 #include <iostream>
+#include <memory>
+#include <map>
+
 #include "game.h"
-#include "playerEnum.h"
+#include "board.h"
+#include "playerEnum.cc"
+#include "pieceEnum.cc"
+#include "colourEnum.cc"
 using namespace std;
 
-Game::Game() {
+Game::Game() : board{make_unique<Board>(8, 8)}, isWhiteTurn{true},
+  stringToColourEnum{
+    {
+      {"white", ColourEnum::White},
+      {"black", ColourEnum::Black}
+    }
+  } {
   players[0] = Player::Human;
   players[1] = Player::Human;
 }
@@ -25,36 +37,27 @@ class InvalidOperation {
 
 };
 
-enum Piece {
-  K,
-  Q,
-  B,
-  R,
-  N,
-  P
-};
-
-std::istream & operator>>( std::istream & in, Piece & p ) {
-   char s;
-   in >> s;
+std::istream & operator>>( std::istream & in, PieceEnum & p ) {
+  char s;
+  in >> s;
   switch (s) {
     case 'K':
-      p = K;
+      p = PieceEnum::K;
       break;
     case 'Q':
-      p = Q;
+      p = PieceEnum::Q;
       break;
     case 'B':
-      p = B;
+      p = PieceEnum::B;
       break;
     case 'R':
-      p = R;
+      p = PieceEnum::R;
       break;
     case 'N':
-      p = N;
+      p = PieceEnum::N;
       break;
     case 'P':
-      p = P;
+      p = PieceEnum::P;
       break;
     default:
       throw InvalidPiece();
@@ -67,10 +70,10 @@ void Game::setup() {
   while (true) {
     try {
       if (cmd == "+") {
-        Piece p;
+        PieceEnum p;
         string loc;
         cin >> p >> loc;
-        // do something
+        board->setSquare(p, isWhiteTurn, loc);
       } else if (cmd == "-") {
         string loc;
         cin >> loc;
@@ -88,4 +91,23 @@ void Game::setup() {
   }
 
   if (cmd == "done") start();
+}
+
+class InvalidColour {
+
+};
+
+void Game::changeTurn(std::string colour) {
+  try {
+    ColourEnum c = stringToColourEnum[colour];
+    if (!c) throw InvalidColour();
+
+    if (c == White) {
+      isWhiteTurn = true;
+    } else if (c == Black) {
+      isWhiteTurn = false;
+    }
+  } catch(...) {
+    cout << "Invalid Colour!" << endl; 
+  }
 }
