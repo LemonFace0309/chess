@@ -1,3 +1,5 @@
+#ifndef _GAME_H_
+#define _GAME_H_
 #include <iostream>
 #include <memory>
 #include "map"
@@ -19,3 +21,4 @@ class Game {
     void setup();
     void changeTurn(std::string colour);
 };
+#endif

@@ -1,3 +1,5 @@
+#ifndef _BOARD_H_
+#define _BOARD_H_
 #include <iostream>
 #include <map>
 #include <memory>
@@ -19,3 +21,4 @@ class Board {
     Board(const int rows, const int cols);
     bool setSquare(PieceEnum p, bool isWhiteTurn, std::string coord); // true for success, false otherwise
 };
+#endif

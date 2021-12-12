@@ -16,13 +16,25 @@ using namespace std;
 
 Square::Square(int row, int col) : row{row}, col{col} {};
 
+int Square::getRow() {
+  return row;
+}
+
+int Square::getCol() {
+  return col;
+}
+
+Piece *Square::getPiece() {
+  return piece.get();
+}
 
 class InvalidPiece {
 
 };
 
+
 void Square::setPiece(PieceEnum p, bool isWhiteTurn) {
-  Colour colour = isWhiteTurn ? Colour::White : Colour::Black;
+  ColourEnum colour = isWhiteTurn ? ColourEnum::White : ColourEnum::Black;
 
   switch (P) {
     case K:
