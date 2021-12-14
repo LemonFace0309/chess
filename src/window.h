@@ -22,7 +22,7 @@ class Xwindow {
   enum {White=0, Black, Red, Green, Blue, Cyan, Yellow, Magenta, Orange, Brown};
 
   // Draws a rectangle
-  void fillRectangle(int x, int y, int colour=Black);
+  void drawSquare(int x, int y, int colour=Black);
 
   // Draws a string
   void drawString(int x, int y, std::string msg, int colour);

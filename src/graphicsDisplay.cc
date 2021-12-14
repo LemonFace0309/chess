@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 
+#include "window.h"
 #include "GraphicsDisplay.h"
 #include "square.h"
 #include "board.h"
@@ -19,48 +20,83 @@ void GraphicsDisplay::notify() {
 }
 
 void GraphicsDisplay::render() {
-  for (int row = rows; row >= 1; --rows) {
-    cout << row << " "; // row coordinate
+    int x = 20;
+    int y = 20;
+    for (int row = rows; row >= 1; --rows) {
+    window->drawString(x, y, row, Xwindow::Black);
+    x = 60;
     for (int col = 1; col <= cols; ++col) {
+			int squareColor;
+			int pieceColor;
+			bool isBlackSquare = (row + col) % 2 == 0;
       const PieceEnum pieceEnum = display[col][row];
+
+      // determines is square is white or black
+
+      if (isBlackSquare) {
+				squareColor = Xwindow::Black;
+				pieceColor = Xwindow::White;
+      } else {
+				squareColor = Xwindow::White;
+				pieceColor = Xwindow::Black;
+			}
+			window->drawSquare(x, y, squareColor);
       switch(pieceEnum) {
         case K:
+					window->drawString(x, y, "K", pieceColor);
           cout << "k";
           break;
         case Q:
-          cout << "q";
+          window->drawString(x, y, "Q", pieceColor);
           break;
         case B:
-          cout << "b";
+          window->drawString(x, y, "B", pieceColor);
           break;
         case R:
-          cout << "r";
+          window->drawString(x, y, "R", pieceColor);
           break;
         case N:
-          cout << "n";
+          window->drawString(x, y, "N", pieceColor);
           break;
         case P:
-          cout << "p";
+          window->drawString(x, y, "P", pieceColor);;
           break;
+				case k:
+          window->drawString(x, y, "k", pieceColor);
+          break;
+        case q:
+          window->drawString(x, y, "q", pieceColor);
+          break;
+        case b:
+          window->drawString(x, y, "b", pieceColor);
+          break;
+        case r:
+          window->drawString(x, y, "r", pieceColor);
+          break;
+        case n:
+          window->drawString(x, y, "n", pieceColor);
+          break;
+        case p:
+          window->drawString(x, y, "p", pieceColor);
+          break;	
         default:
-          // determines is square is white or black
-          if ((row + col) % 2 == 0) {
-            cout << "_";
-          } else {
-            cout << " ";
-          }
+					break;
       }
+			x += 20
     }
-    cout << endl;
+    x = 20;
+		y += 20;
   }
-  cout << endl;
+  x = 60;
+	y += 40;
 
   // prints column coordinates
   for (int col = 1; col <= cols; ++col) {
     char coord = 97 + col - 1;
-    cout << coord;
+    window->drawString(x, y, coord, Xwindow::Black);
   }
-  cout << endl;
+  x = 20;
+	y += 20;
 }
 
 GraphicsDisplay::~GraphicsDisplay() {}
