@@ -9,7 +9,10 @@
 #include "pieceEnum.cc"
 using namespace std;
 
-GraphicsDisplay::GraphicsDisplay(Board *subject, int cols, int rows) : subject{subject}, rows{rows}, cols{cols} {}
+GraphicsDisplay::GraphicsDisplay(Board *subject, int cols, int rows)
+ : subject{subject}, 
+   rows{rows}, 
+   cols{cols} {}
 
 void GraphicsDisplay::notify() {
   Square *changedSquare = subject->getRecentSquareWithAction();
@@ -20,19 +23,25 @@ void GraphicsDisplay::notify() {
 }
 
 void GraphicsDisplay::render() {
+    // Sets the x and y coordinates. It starts at 20 for a 20px margin around the game
     int x = 20;
     int y = 20;
     for (int row = rows; row >= 1; --rows) {
+    // Draws the row labels
     window->drawString(x, y, row, Xwindow::Black);
+
+    // Draws the board
     x = 60;
     for (int col = 1; col <= cols; ++col) {
-			int squareColor;
-			int pieceColor;
-			bool isBlackSquare = (row + col) % 2 == 0;
       const PieceEnum pieceEnum = display[col][row];
 
-      // determines is square is white or black
+      // Determines is square is white or black
+      bool isBlackSquare = (row + col) % 2 == 0;
 
+      // Sets the square coloring and changes the piece's font color depending
+      //   on if the square is black or not
+      int squareColor;
+			int pieceColor;
       if (isBlackSquare) {
 				squareColor = Xwindow::Black;
 				pieceColor = Xwindow::White;
@@ -40,7 +49,11 @@ void GraphicsDisplay::render() {
 				squareColor = Xwindow::White;
 				pieceColor = Xwindow::Black;
 			}
+
+      // Draws the Square
 			window->drawSquare(x, y, squareColor);
+
+      // Draws the piece (string)
       switch(pieceEnum) {
         case K:
 					window->drawString(x, y, "K", pieceColor);
@@ -90,7 +103,7 @@ void GraphicsDisplay::render() {
   x = 60;
 	y += 40;
 
-  // prints column coordinates
+  // Draws column coordinates
   for (int col = 1; col <= cols; ++col) {
     char coord = 97 + col - 1;
     window->drawString(x, y, coord, Xwindow::Black);
