@@ -5,10 +5,9 @@
 #include <memory>
 
 #include "subject.h"
+#include "square.h"
 #include "playerEnum.cc"
 #include "pieceEnum.cc"
-
-class Square;
 
 class Board : public Subject {
   private:
@@ -16,7 +15,7 @@ class Board : public Subject {
     const int cols;
     Player players[2];
     std::map<std::string, std::unique_ptr<Square>> squares;
-    string lastAction; // coordinate
+    std::string lastAction; // coordinate
     bool isWhiteTurn;
     int difficulty;
   public:

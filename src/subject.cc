@@ -8,7 +8,7 @@ using namespace std;
 
 Subject::Subject() {}
 
-void Subject::attach(unique_ptr<Observer> o) {
+void Subject::attach(shared_ptr<Observer> o) {
   observers.push_back(o);
 }
 
@@ -27,3 +27,5 @@ void Subject::renderObservers() {
     observer->render();
   }
 }
+
+Subject::~Subject() {}

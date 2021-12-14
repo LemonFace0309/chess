@@ -13,10 +13,11 @@ class Game {
     Player players[2];
     std::unique_ptr<Board> board;
     bool isWhiteTurn;
-    map<string, ColourEnum> stringToColourEnum;
+    std::map<std::string, ColourEnum> stringToColourEnum;
   public:
     Game();
     Game(Player p1, Player p2);
+    void setDefaults();
     void start();
     void setup();
     void changeTurn(std::string colour);

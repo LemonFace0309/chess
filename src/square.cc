@@ -14,7 +14,7 @@
 using namespace std;
 
 
-Square::Square(int row, int col) : row{row}, col{col} {};
+Square::Square(int col, int row) : col{col}, row{row} {};
 
 int Square::getRow() {
   return row;

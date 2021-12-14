@@ -9,11 +9,11 @@
 
 class Square {
   private:
-    int row;
     int col;
+    int row;
     std::unique_ptr<Piece> piece;
   public:
-    Square(int row, int col);
+    Square(int col, int row);
     int getRow();
     int getCol();
     Piece *getPiece();

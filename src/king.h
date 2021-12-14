@@ -4,10 +4,12 @@
 #include <vector>
 
 #include "piece.h"
+#include "colourEnum.cc"
 #include "pieceEnum.cc"
 
 class King : public Piece {
   public:
+    King(ColourEnum colour);
     PieceEnum getPieceType();
     std::vector<std::string> getValidMoves(std::string coord);
 };

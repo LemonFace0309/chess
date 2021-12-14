@@ -7,7 +7,7 @@
 #include "pieceEnum.cc"
 
 class Piece {
-  private:
+  protected:
     ColourEnum colour;
   public:
     Piece(ColourEnum colour);
