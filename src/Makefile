@@ -1,6 +1,6 @@
 CXX=g++
 CXXFLAGS=-g -std=c++14
-OBJECTS=
+OBJECTS=main.o bishop.o board.o game.o king.o knight.o observer.o pawn.o piece.o pieceEnum.o playerEnum.o queen.o rook.o square.o subject.o textdisplay.o xwindow.o
 DEPENDS=${OBJECTS:.o=.d}
 EXEC=a5q1
 

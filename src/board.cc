@@ -5,19 +5,19 @@
 
 #include "board.h"
 #include "textdisplay.h"
+#include "square.h"
 #include "playerEnum.cc"
 #include "pieceEnum.cc"
-#include "square.h"
 using namespace std;
 
 Board::Board(const int rows, const int cols) : rows{rows}, cols{cols} {
   unique_ptr<TextDisplay> td = make_unique<TextDisplay>(this, cols, rows);
   attach(move(td));
 
-  for (int row = 1; row <= rows; ++row) {
-    for (char col = 'a'; col <= cols + 97; ++col) {
+  for (char col = 'a'; col <= cols + 97; ++col) {
+    for (int row = 1; row <= rows; ++row) {
       const string coord = to_string(col) + to_string(row);
-      squares[coord] = make_unique<Square>(coord, true);
+      squares[coord] = make_unique<Square>(col - 97, row);
     }
   }
 }

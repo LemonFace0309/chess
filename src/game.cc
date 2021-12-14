@@ -9,18 +9,25 @@
 #include "colourEnum.cc"
 using namespace std;
 
-Game::Game() : board{make_unique<Board>(8, 8)}, isWhiteTurn{true},
-  stringToColourEnum{
+void Game::setDefaults() {
+  board = make_unique<Board>(8, 8); 
+  isWhiteTurn = true;
+  stringToColourEnum = {
     {
       {"white", ColourEnum::White},
       {"black", ColourEnum::Black}
     }
-  } {
+  };
+}
+
+Game::Game() {
+  setDefaults();
   players[0] = Player::Human;
   players[1] = Player::Human;
 }
 
 Game::Game(Player p1, Player p2) {
+  setDefaults();
   players[0] = p1;
   players[1] = p2;
 }
