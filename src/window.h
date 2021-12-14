@@ -10,7 +10,7 @@ class Xwindow {
   int s;
   GC gc;
   unsigned long colours[10];
-  int squareSize = 20;
+  int squareSize = 20; // The size of a square on the chess board
 
  public:
   Xwindow();  // Constructor; displays the window.
@@ -21,7 +21,7 @@ class Xwindow {
   // Available colours.
   enum {White=0, Black, Red, Green, Blue, Cyan, Yellow, Magenta, Orange, Brown};
 
-  // Draws a rectangle
+  // Draws a square
   void drawSquare(int x, int y, int colour=Black);
 
   // Draws a string

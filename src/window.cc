@@ -8,6 +8,7 @@
 
 using namespace std;
 
+// Constructor
 Xwindow::Xwindow() {
   int width = squareSize * 12; 
   int height = squareSize * 14;
@@ -55,20 +56,27 @@ Xwindow::Xwindow() {
   usleep(1000);
 }
 
+// Destructor
 Xwindow::~Xwindow() {
   XFreeGC(d, gc);
   XCloseDisplay(d);
 }
 
+// Draws a chessboard square
 void Xwindow::drawSquare(int x, int y, int colour) {
+  // Changes the squares's color and draws the square
   XSetForeground(d, gc, colours[colour]);
   XFillRectangle(d, w, gc, x, y, squareSize, squareSize);
   XSetForeground(d, gc, colours[Black]);
 }
 
+// Draws a string
 void Xwindow::drawString(int x, int y, string msg, int colour) {
+  // Calculates the x and y coordinates, so that the string will be centered on the chess square
   x += (squareSize - 6) / 2;
   y += (squareSize - 10) / 2 + 10;
+
+  // Changes the string's color and draws the string
   XSetForeground(d, gc, colours[colour]);
   XDrawString(d, w, gc, x, y, msg.c_str(), msg.length());
   XSetForeground(d, gc, colours[Black]);
