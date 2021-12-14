@@ -3,20 +3,21 @@
 #include <iostream>
 #include <vector>
 
-#include "display.h"
+#include "observer.h"
 #include "pieceEnum.cc"
 
-class Square;
+class Board;
 
-class TextDisplay : public Display {
+class TextDisplay : public Observer {
   private:
+    Board *subject;
     int cols;
     int rows;
     std::vector<std::vector<PieceEnum>> display; // first col then row
   public:
-    TextDisplay(int cols, int rows);
-    void notify(Square *);
-    void render();
+    TextDisplay(Board *subject, int cols, int rows);
+    void notify() override;
+    void render() override;
     ~TextDisplay();
 };
 

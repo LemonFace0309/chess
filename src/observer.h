@@ -4,6 +4,7 @@
 class Observer {
  public:
   virtual void notify() = 0;
-  virtual ~Observer() = default;
+  virtual void render() = 0;
+  virtual ~Observer();
 };
 #endif

@@ -4,5 +4,6 @@ enum PieceEnum {
   B,
   R,
   N,
-  P
+  P,
+  NONE
 };

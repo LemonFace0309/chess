@@ -74,10 +74,16 @@ void Game::setup() {
         string loc;
         cin >> p >> loc;
         board->setSquare(p, isWhiteTurn, loc);
+        board->finishTurn();
       } else if (cmd == "-") {
         string loc;
         cin >> loc;
-        // do something
+        board->setSquare(PieceEnum::NONE, isWhiteTurn, loc);
+        board->finishTurn();
+      } else if (cmd == "=") {
+        string colour;
+        cin >> colour;
+        changeTurn(colour);
       } else if (cmd == "done") {
         break;
       } else {

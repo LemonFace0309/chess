@@ -37,23 +37,26 @@ void Square::setPiece(PieceEnum p, bool isWhiteTurn) {
   ColourEnum colour = isWhiteTurn ? ColourEnum::White : ColourEnum::Black;
 
   switch (P) {
-    case K:
+    case PieceEnum::K:
       piece = make_unique<King>(colour);
       break;
-    case Q:
+    case PieceEnum::Q:
       piece = make_unique<Queen>(colour);
       break;
-    case B:
+    case PieceEnum::B:
       piece = make_unique<Bishop>(colour);
       break;
-    case R:
+    case PieceEnum::R:
       piece = make_unique<Rook>(colour);
       break;
-    case N:
+    case PieceEnum::N:
       piece = make_unique<Knight>(colour);
       break;
-    case P:
+    case PieceEnum::P:
       piece = make_unique<Pawn>(colour);
+      break;
+    case PieceEnum::NONE:
+      piece = nullptr;
       break;
     default:
       throw InvalidPiece();

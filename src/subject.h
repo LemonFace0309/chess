@@ -8,9 +8,11 @@ class Observer;
 class Subject {
   std::vector<std::unique_ptr<Observer>> observers;
  public:
-  void attach(Observer *o);
-  void detach(Observer *o);
+  Subject();
+  void attach(std::unique_ptr<Observer>);
+  void clear();
   void notifyObservers();
+  void renderObservers();
   virtual ~Subject() = 0;
 };
 

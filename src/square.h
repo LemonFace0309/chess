@@ -3,12 +3,11 @@
 #include <iostream>
 #include <memory>
 
-#include "subject.h"
 #include "piece.h"
 #include "pieceEnum.cc"
 
 
-class Square : public Subject {
+class Square {
   private:
     int row;
     int col;

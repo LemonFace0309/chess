@@ -2,27 +2,65 @@
 #include <vector>
 
 #include "textdisplay.h"
-#include "display.h"
 #include "square.h"
+#include "board.h"
 #include "piece.h"
 #include "pieceEnum.cc"
+using namespace std;
 
-TextDisplay::TextDisplay(int cols, int rows) : rows{rows}, cols{cols} {}
+TextDisplay::TextDisplay(Board *subject, int cols, int rows) : subject{subject}, rows{rows}, cols{cols} {}
 
-void TextDisplay::notify(Square * square) {
-  Piece *piece = square->getPiece();
-  int row = square->getRow();
-  int col = square->getCol();
+void TextDisplay::notify() {
+  Square *changedSquare = subject->getRecentSquareWithAction();
+  Piece *piece = changedSquare->getPiece();
+  int row = changedSquare->getRow();
+  int col = changedSquare->getCol();
   display[col][row] = piece->getPieceType();
 }
 
 void TextDisplay::render() {
-  for (int col = 1; col <= cols; ++col) {
-    for (int row = 1; row <= rows; ++rows) {
+  for (int row = rows; row >= 1; --rows) {
+    cout << row << " "; // row coordinate
+    for (int col = 1; col <= cols; ++col) {
       const PieceEnum pieceEnum = display[col][row];
-      //do later
+      switch(pieceEnum) {
+        case K:
+          cout << "k";
+          break;
+        case Q:
+          cout << "q";
+          break;
+        case B:
+          cout << "b";
+          break;
+        case R:
+          cout << "r";
+          break;
+        case N:
+          cout << "n";
+          break;
+        case P:
+          cout << "p";
+          break;
+        default:
+          // determines is square is white or black
+          if ((row + col) % 2 == 0) {
+            cout << "_";
+          } else {
+            cout << " ";
+          }
+      }
     }
+    cout << endl;
   }
+  cout << endl;
+
+  // prints column coordinates
+  for (int col = 1; col <= cols; ++col) {
+    char coord = 97 + col - 1;
+    cout << coord;
+  }
+  cout << endl;
 }
 
 TextDisplay::~TextDisplay() {}
