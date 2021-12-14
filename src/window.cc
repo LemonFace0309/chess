@@ -68,7 +68,7 @@ void Xwindow::drawSquare(int x, int y, int colour) {
 
 void Xwindow::drawString(int x, int y, string msg, int colour) {
   x += (squareSize - 6) / 2;
-  y += (squareSize - 10) / 2
+  y += (squareSize - 10) / 2 + 10;
   XSetForeground(d, gc, colours[colour]);
   XDrawString(d, w, gc, x, y, msg.c_str(), msg.length());
   XSetForeground(d, gc, colours[Black]);
