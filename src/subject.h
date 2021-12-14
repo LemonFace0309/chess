@@ -6,10 +6,10 @@
 class Observer;
 
 class Subject {
-  std::vector<std::unique_ptr<Observer>> observers;
+  std::vector<std::shared_ptr<Observer>> observers;
  public:
   Subject();
-  void attach(std::unique_ptr<Observer>);
+  void attach(std::shared_ptr<Observer>);
   void clear();
   void notifyObservers();
   void renderObservers();

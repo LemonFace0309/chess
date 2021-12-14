@@ -2,6 +2,12 @@
 #define _PIECE_ENUM_
 
 enum PieceEnum {
+  k,
+  q,
+  b,
+  r,
+  n,
+  p,
   K,
   Q,
   B,

@@ -11,8 +11,8 @@
 using namespace std;
 
 Board::Board(const int rows, const int cols) : rows{rows}, cols{cols} {
-  unique_ptr<TextDisplay> td = make_unique<TextDisplay>(this, cols, rows);
-  attach(move(td));
+  shared_ptr<TextDisplay> td = make_shared<TextDisplay>(this, cols, rows);
+  attach(td);
 
   for (char col = 'a'; col <= cols + 97; ++col) {
     for (int row = 1; row <= rows; ++row) {
