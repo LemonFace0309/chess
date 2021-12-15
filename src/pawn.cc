@@ -29,20 +29,19 @@ vector<vector<string>> Pawn::getValidMoves(string coord, int cols, int rows, boo
 
   // filtering moves based on colour and if it's the first move
   if (colour == ColourEnum::White) {
-    if (!(y + 2 > cols) && firstMove) {
-      forwards.push_back(string(1, char(x + 96)) + to_string(y + 2));
-    }
-
     if (!(y + 1 > cols)) {
       forwards.push_back(string(1, char(x + 96)) + to_string(y + 1));
     }
-  } else {
-    if (!(y - 2 < 1) && firstMove) {
-      forwards.push_back(string(1, char(x + 96)) + to_string(y - 2));
+    if (!(y + 2 > cols) && firstMove) {
+      forwards.push_back(string(1, char(x + 96)) + to_string(y + 2));
     }
-
+    
+  } else {
     if (!(y - 1 < 1)) {
       forwards.push_back(string(1, char(x + 96)) + to_string(y - 1));
+    }
+    if (!(y - 2 < 1) && firstMove) {
+      forwards.push_back(string(1, char(x + 96)) + to_string(y - 2));
     }
   }
 
