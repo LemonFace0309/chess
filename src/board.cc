@@ -318,14 +318,11 @@ string Board::isChecked(bool isWhiteChecked) {
   // Gets the coordinates of the black or white king
   string coord;
   // cout << "isChecked" << endl;
-  // cout << isWhiteChecked << endl;
   if (isWhiteChecked) {
     coord = whiteKingCoord;
-    // cout << whiteKingCoord << endl;
   } else {
     coord = blackKingCoord;
   }
-  // cout << coord << endl;
   // Gets the coordinates of possible checks by a knight
   Knight knight{colour};
   vector<vector<string>> knightChecks = knight.getValidMoves(coord, cols, rows, false);
@@ -338,8 +335,10 @@ string Board::isChecked(bool isWhiteChecked) {
         Piece * piece = square->getPiece();
         if (piece != nullptr && piece->getColour() != colour) {
           if (isWhiteChecked && piece->getPieceType() == PieceEnum::n) {
+            //cout << "n" << endl;
             return coord;
           } else if (!isWhiteChecked && piece->getPieceType() == PieceEnum::N) {
+            //cout << "N" << endl;
             return coord;
           }             
         }   
@@ -505,7 +504,7 @@ void Board::findAllValidMoves(bool firstTurn) {
   }
   // Sees if the player's king is in check or not
   string checkStatus = isChecked(isWhiteTurn);
-  bool isChecked = checkStatus == "";
+  bool isChecked = checkStatus != "";
   if (isChecked) {
     // Gets the coordinates to stop the check
     validCheckMoves =  possibleUncheckMoves(checkStatus, isWhiteTurn);
@@ -563,8 +562,8 @@ void Board::findAllValidMoves(bool firstTurn) {
   validBlackMoves.insert(validBlackMoves.end(), validBlackKingMoves.begin(), validBlackKingMoves.end());
 
   allValidMoves["white"] = validWhiteMoves;
-  // for (auto move : allValidMoves["white"]) {
-  //   cout << move << endl;
-  // }
+  for (auto move : allValidMoves["white"]) {
+    cout << move << endl;
+  }
   allValidMoves["black"] = validBlackMoves;
 }
