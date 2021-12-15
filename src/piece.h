@@ -17,6 +17,6 @@ class Piece {
     virtual PieceEnum getPieceType() = 0;
 
     // Returns a vector of strings representing the piece's valid moves (ex: "a1")
-    virtual std::vector<std::string> getValidMoves(std::string coord) = 0; 
+    virtual std::vector<std::vector<std::string>> getValidMoves(std::string coord, int cols, int rows, bool firstMove = false) = 0; 
 };
 #endif

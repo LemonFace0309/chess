@@ -18,8 +18,9 @@ class Game {
     Game();
     Game(Player p1, Player p2);
     void setDefaults();
-    void start();
+    void start(); // starts with a new board
+    void begin(); // starts with the current board
     void setup();
-    void changeTurn(std::string colour);
+    void changeTurn(ColourEnum colour);
 };
 #endif

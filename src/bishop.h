@@ -11,6 +11,6 @@ class Bishop : public Piece {
   public:
     Bishop(ColourEnum colour);
     PieceEnum getPieceType();
-    std::vector<std::string> getValidMoves(std::string coord);
+    std::vector<std::vector<std::string>> getValidMoves(std::string coord, int cols, int rows, bool firstMove = false) override;
 };
 #endif

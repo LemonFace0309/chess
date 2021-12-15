@@ -11,6 +11,7 @@ class Square {
   private:
     int col;
     int row;
+    bool firstMove;
     std::unique_ptr<Piece> piece;
   public:
     Square(int col, int row);
@@ -25,7 +26,7 @@ class Square {
     Piece *getPiece();
 
     // Sets a piece onto the square
-    void setPiece(PieceEnum p, bool isWhiteTurn);
+    void setPiece(PieceEnum p, bool isWhiteTurn, bool firstTurn = false);
 
     // Determines if the move to coord is a valid move or not
     bool isValidMove(std::string coord, bool isWhiteTurn);

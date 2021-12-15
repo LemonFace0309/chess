@@ -14,7 +14,7 @@
 using namespace std;
 
 // Constructor
-Square::Square(int col, int row) : col{col}, row{row} {};
+Square::Square(int col, int row) : col{col}, row{row}, firstMove{true} {};
 
 // Returns the row the square is in
 int Square::getRow() {
@@ -36,7 +36,8 @@ class InvalidPiece {
 };
 
 // Sets a piece onto the square
-void Square::setPiece(PieceEnum p, bool isWhiteTurn) {
+void Square::setPiece(PieceEnum p, bool isWhiteTurn, bool firstTurn) {
+  firstMove = firstTurn;
   ColourEnum colour = isWhiteTurn ? ColourEnum::White : ColourEnum::Black;
   // Changes the current piece on the square into the new piece
   switch (p) {
