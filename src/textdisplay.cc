@@ -23,7 +23,7 @@ void TextDisplay::notify() {
   Piece *piece = changedSquare->getPiece();
   int row = changedSquare->getRow();
   int col = changedSquare->getCol();
-  display[col - 1][row - 1] = piece->getPieceType();
+  display[col - 1][row - 1] = piece ? piece->getPieceType() : PieceEnum::NONE;
 }
 
 void TextDisplay::render() {
