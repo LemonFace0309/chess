@@ -71,7 +71,7 @@ void Game::start() {
 }
 
 void Game::begin() {
-  ColourEnum c = isWhiteTurn ? ColourEnum::White :  ColourEnum::Black;
+  // ColourEnum c = isWhiteTurn ? ColourEnum::White :  ColourEnum::Black;
 
   while (true) {
     string cmd;
@@ -83,10 +83,12 @@ void Game::begin() {
 
       // get all pseudo moves
       while (!validMove) {
+        cout << "moving" << endl;
         cin >> coord1 >> coord2;
 
         // checks for valid move on square
         validMove = board->isValidMove(coord1, coord2, turns <= 2);
+        cout << validMove << endl;
       }
       board->move(coord1, coord2, turns <= 2);
       turns++;
@@ -96,8 +98,8 @@ void Game::begin() {
     } else if (cmd == "resign") {
       // do something
     }
-    changeTurn(c);
-    c = isWhiteTurn ? ColourEnum::Black :  ColourEnum::White; // changes colour for next turn
+    // changeTurn(c);
+    // c = isWhiteTurn ? ColourEnum::Black :  ColourEnum::White; // changes colour for next turn
   }
 }
 
@@ -168,7 +170,7 @@ void Game::setup() {
           throw InvalidColour();
         }
 
-        changeTurn(c);
+        // changeTurn(c);
       } else if (cmd == "done") {
         begin();
         break;

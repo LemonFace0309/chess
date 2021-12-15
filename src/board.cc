@@ -22,6 +22,7 @@ using namespace std;
 Board::Board(const int rows, const int cols) : rows{rows}, cols{cols} {
   whiteKingCoord = "";
   blackKingCoord = "";
+  isWhiteTurn = true;
   shared_ptr<TextDisplay> td = make_shared<TextDisplay>(this, cols, rows);
   attach(td);
   // shared_ptr<GraphicsDisplay> gd = make_shared<GraphicsDisplay>(this, cols, rows);
@@ -42,9 +43,9 @@ Square *Board::getRecentSquareWithAction() {
 bool Board::setSquare(PieceEnum p, bool isWhiteTurn, string coord, bool firstTurn) {
   if (!squares[coord]) return false; // invalid coordinate
 
-  if (p == PieceEnum::k) {
+  if (p == PieceEnum::K && !isWhiteTurn) {
     blackKingCoord = coord;
-  } else if (p == PieceEnum::K) {
+  } else if (p == PieceEnum::K && isWhiteTurn) {
     whiteKingCoord = coord;
   }
   squares[coord]->setPiece(p, isWhiteTurn, firstTurn);
@@ -98,12 +99,12 @@ void Board::flattenMoves(string coord, PieceEnum pieceEnum, vector<vector<string
         if (othPiece != nullptr) {
             // Checks if the piece at the square is takeable
             if (othPiece->getColour() != other) {
-              cout << coord << " " << move << endl;
+              // cout << coord << " " << move << endl;
               addMove(coord + " " + move, pieceIsWhite, validWhiteMoves, validBlackMoves);                  
             }
             break;
           } else {
-            cout << coord << " " << move << endl;
+            // cout << coord << " " << move << endl;
             addMove(coord + " " + move, pieceIsWhite, validWhiteMoves, validBlackMoves);     
           }
         }
@@ -119,12 +120,12 @@ void Board::flattenMoves(string coord, PieceEnum pieceEnum, vector<vector<string
           if (othPiece != nullptr) {
             // Checks if the piece at the square is takeable
             if (othPiece->getColour() != other) {
-              cout << coord << " " << move << endl;
+              // cout << coord << " " << move << endl;
               addMove(coord + " " + move, pieceIsWhite, validWhiteMoves, validBlackMoves);                  
             }
             
           } else {
-            cout << coord << " " << move << endl;
+            // cout << coord << " " << move << endl;
             addMove(coord + " " + move, pieceIsWhite, validWhiteMoves, validBlackMoves);     
           }
         }   
@@ -136,7 +137,7 @@ void Board::flattenMoves(string coord, PieceEnum pieceEnum, vector<vector<string
         Piece *othPiece = squares[move]->getPiece();
         // Checks if the square is empty
         if (othPiece == nullptr) {
-          cout << coord << " " << move << endl;
+          // cout << coord << " " << move << endl;
           addMove(coord + " " + move, pieceIsWhite, validWhiteMoves, validBlackMoves);    
         }
       }
@@ -175,12 +176,12 @@ void Board::flattenCheckedMoves(string coord, PieceEnum pieceEnum, vector<vector
         if (find(validCheckMoves.begin(), validCheckMoves.end(), move) != validCheckMoves.end()) {
           if (othPiece != nullptr) {
             if (othPiece->getColour() != other) {
-              cout << coord << " " << move << endl;
+              // cout << coord << " " << move << endl;
               addMove(coord + " " + move, pieceIsWhite, validWhiteMoves, validBlackMoves);             
             }
             break;
           } else {
-            cout << coord << " " << move << endl;
+            // cout << coord << " " << move << endl;
             addMove(coord + " " + move, pieceIsWhite, validWhiteMoves, validBlackMoves);
             break;     
           }
@@ -198,12 +199,12 @@ void Board::flattenCheckedMoves(string coord, PieceEnum pieceEnum, vector<vector
           if (find(validCheckMoves.begin(), validCheckMoves.end(), move) != validCheckMoves.end()) {
             if (othPiece != nullptr) {
               if (othPiece->getColour() != other) {
-                cout << coord << " " << move << endl;
+                // cout << coord << " " << move << endl;
                 addMove(coord + " " + move, pieceIsWhite, validWhiteMoves, validBlackMoves);             
               }
               break;
             } else {
-              cout << coord << " " << move << endl;
+              // cout << coord << " " << move << endl;
               addMove(coord + " " + move, pieceIsWhite, validWhiteMoves, validBlackMoves);
               break;     
             }
@@ -218,7 +219,7 @@ void Board::flattenCheckedMoves(string coord, PieceEnum pieceEnum, vector<vector
         // Checks if the square is empty
         if (find(validCheckMoves.begin(), validCheckMoves.end(), move) != validCheckMoves.end()) {
           if (othPiece == nullptr)  {
-            cout << coord << " " << move << endl;
+            // cout << coord << " " << move << endl;
             addMove(coord + " " + move, pieceIsWhite, validWhiteMoves, validBlackMoves);               
           }
           break;  
@@ -238,7 +239,7 @@ void Board::flattenCheckedMoves(string coord, PieceEnum pieceEnum, vector<vector
         if (find(validCheckMoves.begin(), validCheckMoves.end(), coords) != validCheckMoves.end()) {
           if (tempPiece != nullptr) {
             if (tempPiece->getColour() != other) {
-              cout << coord << " " << coords << endl;
+              // cout << coord << " " << coords << endl;
               addMove(coord + " " + coords, pieceIsWhite, validWhiteMoves, validBlackMoves);             
             }
           }
@@ -258,6 +259,7 @@ void Board::move(string coord1, string coord2, bool firstTurn) {
 bool Board::isValidMove(string coord1, string coord2, bool firstTurn) {
   string colourTurn;
   ColourEnum colour;
+  // cout << isWhiteTurn << endl;
   if (isWhiteTurn) {
     colourTurn = "white";
     colour = ColourEnum::White;
@@ -266,6 +268,10 @@ bool Board::isValidMove(string coord1, string coord2, bool firstTurn) {
     colour = ColourEnum::Black;
   }
   string move = coord1 + " " + coord2;
+  // cout << move << endl;
+   for (auto move : allValidMoves[colourTurn]) {
+    // cout << move << endl;
+  }
   // Checks if the move is valid (doesn't include being under check)
   if (find(allValidMoves[colourTurn].begin(), allValidMoves[colourTurn].end(), move)
       != allValidMoves[colourTurn].end()) {
@@ -280,6 +286,7 @@ bool Board::isValidMove(string coord1, string coord2, bool firstTurn) {
     // Temporarily moves the piece
     PieceEnum p = squares[coord1]->getPiece()->getPieceType();
     squares[coord2]->setPiece(p, isWhiteTurn, firstTurn);
+    // cout << isChecked(isWhiteTurn) << endl;
     // Checks if the king is under check after the move
     if (isWhiteTurn && isChecked(isWhiteTurn) != "") {
       // Undos the move
@@ -303,11 +310,15 @@ string Board::isChecked(bool isWhiteChecked) {
   ColourEnum colour = ColourEnum::White;
   // Gets the coordinates of the black or white king
   string coord;
+  // cout << "isChecked" << endl;
+  // cout << isWhiteChecked << endl;
   if (isWhiteChecked) {
     coord = whiteKingCoord;
+    // cout << whiteKingCoord << endl;
   } else {
     coord = blackKingCoord;
   }
+  // cout << coord << endl;
   // Gets the coordinates of possible checks by a knight
   Knight knight{colour};
   vector<vector<string>> knightChecks = knight.getValidMoves(coord, cols, rows, false);
@@ -481,6 +492,11 @@ void Board::findAllValidMoves(bool firstTurn) {
     // Gets the coordinates to stop the check
     validCheckMoves =  possibleUncheckMoves(checkStatus, isWhiteTurn);
   }
+
+
+  isChecked = false;
+
+
   // Iterates through every square on the board
   for (char col = 'a'; col < cols + 97; ++col) {
     for (int row = 1; row <= rows; ++row) {
@@ -488,7 +504,7 @@ void Board::findAllValidMoves(bool firstTurn) {
       const string coord = string(1, col) + to_string(row);
       // Checks if there's a piece on the square
       Piece *piece = squares[coord]->getPiece();
-      cout << coord << endl;
+      // cout << coord << endl;
       if (piece != nullptr) {
         bool pieceIsWhite = piece->getColour() == ColourEnum::White;
         const PieceEnum pieceEnum = piece->getPieceType();
@@ -498,19 +514,20 @@ void Board::findAllValidMoves(bool firstTurn) {
         if (isChecked) {
           flattenCheckedMoves(coord, pieceEnum,allMoves, validCheckMoves, 
                               piece->getColour(), validWhiteMoves, validBlackMoves);
+        } else {
+          flattenMoves(coord, pieceEnum, allMoves, piece->getColour(), validWhiteMoves, validBlackMoves);
         }
-        flattenMoves(coord, pieceEnum, allMoves, piece->getColour(), validWhiteMoves, validBlackMoves);
         if (pieceEnum == PieceEnum::K || pieceEnum == PieceEnum::k ) {
           // Iterates through all the possible moves
           for (auto moves : allMoves) {
             for (auto move : moves) {
               Square *square = squares[move].get();
               if (square != nullptr) {
-                Piece *othPiece = squares[move]->getPiece();
+                Piece *othPiece = square->getPiece();
                 // Checks if the square is empty
                 if (othPiece != nullptr) {
                   // Checks if the piece at the square is takeable
-                  if (othPiece->getColour() != turnColour) {
+                  if (othPiece->getColour() != piece->getColour()) {
                     addMove(coord + " " + move, pieceIsWhite, validWhiteKingMoves, validBlackKingMoves);    
                   }
                 } else {
@@ -523,6 +540,9 @@ void Board::findAllValidMoves(bool firstTurn) {
       }
     }
   }
+  for (auto move : validWhiteKingMoves) {
+    // cout << move << endl;
+  }
   // Filters out any moves that will put their own king in check
   validWhiteKingMoves = filterKingMoves(validWhiteKingMoves, validBlackMoves);
   validBlackKingMoves = filterKingMoves(validBlackKingMoves, validWhiteMoves);
@@ -530,5 +550,8 @@ void Board::findAllValidMoves(bool firstTurn) {
   validBlackMoves.insert(validBlackMoves.end(), validBlackKingMoves.begin(), validBlackKingMoves.end());
 
   allValidMoves["white"] = validWhiteMoves;
+  // for (auto move : allValidMoves["white"]) {
+  //   cout << move << endl;
+  // }
   allValidMoves["black"] = validBlackMoves;
 }
