@@ -11,6 +11,7 @@
 class Game {
   private:
     Player players[2];
+    bool isFirstTurn;
     std::unique_ptr<Board> board;
     bool isWhiteTurn;
     std::map<std::string, ColourEnum> stringToColourEnum;

@@ -64,6 +64,7 @@ void Game::start() {
 
   // rendering the game
   board->finishTurn();
+  board->findAllValidMoves(true);
 
   // beginning game
   begin();
@@ -75,7 +76,7 @@ void Game::begin() {
   while (true) {
     string cmd;
     cin >> cmd;
-
+    int turns = 1;
     if (cmd == "move") {
       bool validMove = false;
       string coord1, coord2;
@@ -85,12 +86,12 @@ void Game::begin() {
         cin >> coord1 >> coord2;
 
         // checks for valid move on square
-        string move = coord1 + " " + coord2;
-
-        // board->findAllValidMoves(bool firstTurn);
+        validMove = board->isValidMove(coord1, coord2, turns <= 2);
       }
-      // check for checks
+      board->move(coord1, coord2, turns <= 2);
+      turns++;
       // check for checkmate
+      board->findAllValidMoves(turns <= 2);
       board->finishTurn(); // renders the board
     } else if (cmd == "resign") {
       // do something

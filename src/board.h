@@ -24,6 +24,7 @@ class Board : public Subject {
     //string playerUnderCheck; // in the form of "[(b or w)] [from coordinate (ex: e1)]"
   public:
     Board(const int rows, const int cols);
+    void move(std::string coord1, std::string coord2, bool firstTurn);
     Square *getRecentSquareWithAction();
     bool isValidMove(std::string coord1, std::string coord2, bool firstTurn);
     bool isChecked(bool isWhiteChecked);

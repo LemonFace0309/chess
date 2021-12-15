@@ -87,8 +87,8 @@ void addMove(string coord, bool pieceIsWhite, vector<string> &validWhiteMoves,
 void Board::flattenMoves(string coord, PieceEnum pieceEnum, vector<vector<string>> allMoves,
                    ColourEnum other, vector<string> &validWhiteMoves, vector<string> &validBlackMoves) {
   bool pieceIsWhite = other == ColourEnum::White;
-  if (pieceEnum == PieceEnum::Q || pieceEnum == PieceEnum::q || 
-    pieceEnum == PieceEnum::Q || pieceEnum == PieceEnum::q || 
+  if (pieceEnum == PieceEnum::R || pieceEnum == PieceEnum::r || 
+    pieceEnum == PieceEnum::B || pieceEnum == PieceEnum::b || 
     pieceEnum == PieceEnum::Q || pieceEnum == PieceEnum::q) {
     // Iterates through all the possible moves    
     for (auto moves : allMoves) {
@@ -98,10 +98,12 @@ void Board::flattenMoves(string coord, PieceEnum pieceEnum, vector<vector<string
         if (othPiece != nullptr) {
             // Checks if the piece at the square is takeable
             if (othPiece->getColour() != other) {
+              cout << coord << " " << move << endl;
               addMove(coord + " " + move, pieceIsWhite, validWhiteMoves, validBlackMoves);                  
             }
             break;
           } else {
+            cout << coord << " " << move << endl;
             addMove(coord + " " + move, pieceIsWhite, validWhiteMoves, validBlackMoves);     
           }
         }
@@ -110,17 +112,23 @@ void Board::flattenMoves(string coord, PieceEnum pieceEnum, vector<vector<string
     // Iterates through all the possible moves
     for (auto moves : allMoves) {
       for (auto move : moves) { 
-        Piece *othPiece = squares[move]->getPiece();
-        // Checks if the square is empty
-        if (othPiece != nullptr) {
-          // Checks if the piece at the square is takeable
-          if (othPiece->getColour() != other) {
-            addMove(coord + " " + move, pieceIsWhite, validWhiteMoves, validBlackMoves);                  
+        Square *square = squares[move].get();
+        if (square != nullptr) {
+          Piece *othPiece = squares[move]->getPiece();
+          // Checks if the square is empty
+          if (othPiece != nullptr) {
+            // Checks if the piece at the square is takeable
+            if (othPiece->getColour() != other) {
+              cout << coord << " " << move << endl;
+              addMove(coord + " " + move, pieceIsWhite, validWhiteMoves, validBlackMoves);                  
+            }
+            
+          } else {
+            cout << coord << " " << move << endl;
+            addMove(coord + " " + move, pieceIsWhite, validWhiteMoves, validBlackMoves);     
           }
-        } else {
-          addMove(coord + " " + move, pieceIsWhite, validWhiteMoves, validBlackMoves);     
-        }
-      }     
+        }   
+      }  
     }    
   } else if (pieceEnum == PieceEnum::P || pieceEnum == PieceEnum::p ) {
     for (auto moves : allMoves) {
@@ -128,6 +136,7 @@ void Board::flattenMoves(string coord, PieceEnum pieceEnum, vector<vector<string
         Piece *othPiece = squares[move]->getPiece();
         // Checks if the square is empty
         if (othPiece == nullptr) {
+          cout << coord << " " << move << endl;
           addMove(coord + " " + move, pieceIsWhite, validWhiteMoves, validBlackMoves);    
         }
       }
@@ -144,6 +153,7 @@ void Board::flattenMoves(string coord, PieceEnum pieceEnum, vector<vector<string
         Piece *tempPiece = square->getPiece();
         if (tempPiece != nullptr) {
           if (tempPiece->getColour() != other) {
+            
             addMove(coord + " " + coords, pieceIsWhite, validWhiteMoves, validBlackMoves);                  
           }      
         }
@@ -152,6 +162,11 @@ void Board::flattenMoves(string coord, PieceEnum pieceEnum, vector<vector<string
   }
 }
 
+void Board::move(string coord1, string coord2, bool firstTurn) {
+  PieceEnum p = squares[coord1]->getPiece()->getPieceType();
+  Board::setSquare(p, isWhiteTurn, coord2, firstTurn);
+  Board::setSquare(PieceEnum::NONE, isWhiteTurn, coord1, firstTurn);
+}
 // Checks if the move is valid
 bool Board::isValidMove(string coord1, string coord2, bool firstTurn) {
   string colourTurn;
@@ -301,9 +316,7 @@ void Board::findAllValidMoves(bool firstTurn) {
   vector<string> validWhiteMoves;
   vector<string> validWhiteKingMoves;
   vector<string> validBlackMoves; 
-  vector<string> validBlackKingMoves; 
-  // vector<string> whiteChecksOnBlack;
-  // vector<string> blackChecksOnWhite;
+  vector<string> validBlackKingMoves;
   // Determines which colour's turn it is
   ColourEnum turnColour;
   if (isWhiteTurn) {
@@ -318,6 +331,7 @@ void Board::findAllValidMoves(bool firstTurn) {
       const string coord = string(1, col) + to_string(row);
       // Checks if there's a piece on the square
       Piece *piece = squares[coord]->getPiece();
+      cout << coord << endl;
       if (piece != nullptr) {
         bool pieceIsWhite = piece->getColour() == ColourEnum::White;
         const PieceEnum pieceEnum = piece->getPieceType();
@@ -329,15 +343,18 @@ void Board::findAllValidMoves(bool firstTurn) {
           // Iterates through all the possible moves
           for (auto moves : allMoves) {
             for (auto move : moves) {
-              Piece *othPiece = squares[move]->getPiece();
-              // Checks if the square is empty
-              if (othPiece != nullptr) {
-                // Checks if the piece at the square is takeable
-                if (othPiece->getColour() != turnColour) {
+              Square *square = squares[move].get();
+              if (square != nullptr) {
+                Piece *othPiece = squares[move]->getPiece();
+                // Checks if the square is empty
+                if (othPiece != nullptr) {
+                  // Checks if the piece at the square is takeable
+                  if (othPiece->getColour() != turnColour) {
+                    addMove(coord + " " + move, pieceIsWhite, validWhiteKingMoves, validBlackKingMoves);    
+                  }
+                } else {
                   addMove(coord + " " + move, pieceIsWhite, validWhiteKingMoves, validBlackKingMoves);    
                 }
-              } else {
-                addMove(coord + " " + move, pieceIsWhite, validWhiteKingMoves, validBlackKingMoves);    
               }
             }
           }
