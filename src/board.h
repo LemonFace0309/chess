@@ -36,5 +36,6 @@ class Board : public Subject {
     bool setSquare(PieceEnum p, bool isWhiteTurn, std::string coord, bool firstTurn = false); // true for success, false otherwise
     void finishTurn(); // renders the board
     void findAllValidMoves(bool firstTurn = false);
+    ~Board();
 };
 #endif

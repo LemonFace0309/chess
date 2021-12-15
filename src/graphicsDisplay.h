@@ -1,5 +1,5 @@
-#ifndef _GRAPHICSDISPLAY_H_
-#define _GRAPHICSDISPLAY_H_
+#ifndef _GRAPHICS_DISPLAY_H_
+#define _GRAPHICS_DISPLAY_H_
 #include "observer.h"
 #include "pieceEnum.cc"
 #include "window.h"
