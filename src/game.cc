@@ -10,15 +10,14 @@
 #include "colourEnum.cc"
 using namespace std;
 
+map<string, ColourEnum> stringToColourEnum = {
+  {"white", ColourEnum::White},
+  {"black", ColourEnum::Black}
+};
+
 void Game::setDefaults() {
   board = make_unique<Board>(8, 8); 
   isWhiteTurn = true;
-  stringToColourEnum = {
-    {
-      {"white", ColourEnum::White},
-      {"black", ColourEnum::Black}
-    }
-  };
 }
 
 Game::Game() {
@@ -172,7 +171,7 @@ void Game::setup() {
           throw InvalidColour();
         }
 
-        // changeTurn(c);
+        changeTurn(c);
       } else if (cmd == "done") {
         begin();
         break;
@@ -180,6 +179,10 @@ void Game::setup() {
         throw InvalidOperation();
       }
     } catch (...) {
+      // reads till end of line to prevent Invalid response from being printed out multiple times
+      while (cin.peek() != '\n') {
+        cin.ignore();
+      }
       cout << "Invalid response!" << endl;
     }
   }
