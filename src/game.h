@@ -23,5 +23,6 @@ class Game {
     void begin(); // starts with the current board
     void setup();
     void changeTurn(ColourEnum colour);
+    ~Game();
 };
 #endif

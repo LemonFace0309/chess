@@ -147,6 +147,8 @@ void Game::setup() {
   string cmd;
   while (true) {
     cin >> cmd;
+    if (cin.eof()) break;
+  
     try {
       if (cmd == "+") {
         PieceEnum p;
@@ -197,3 +199,5 @@ void Game::changeTurn(ColourEnum c) {
     cout << "Invalid Colour!" << endl; 
   }
 }
+
+Game::~Game() {};

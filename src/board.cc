@@ -576,3 +576,5 @@ void Board::findAllValidMoves(bool firstTurn) {
   //   cout << move << endl;
   // }
 }
+
+Board::~Board() {};
