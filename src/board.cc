@@ -85,6 +85,7 @@ void addMove(string coord, bool pieceIsWhite, vector<string> &validWhiteMoves,
   } 
 }
 
+// Flattens the vector of vector of coordinates into a single vector
 void Board::flattenMoves(string coord, PieceEnum pieceEnum, vector<vector<string>> allMoves,
                    ColourEnum other, vector<string> &validWhiteMoves, vector<string> &validBlackMoves) {
   bool pieceIsWhite = other == ColourEnum::White;
@@ -163,6 +164,8 @@ void Board::flattenMoves(string coord, PieceEnum pieceEnum, vector<vector<string
   }
 }
 
+// Flattens the vector of vector of coordinates into a single vector, which contains all the possible
+//   moves to stop the check
 void Board::flattenCheckedMoves(string coord, PieceEnum pieceEnum, vector<vector<string>> allMoves, vector<string> validCheckMoves,
                    ColourEnum other, vector<string> &validWhiteMoves, vector<string> &validBlackMoves) {
   bool pieceIsWhite = other == ColourEnum::White;
@@ -173,8 +176,10 @@ void Board::flattenCheckedMoves(string coord, PieceEnum pieceEnum, vector<vector
     for (auto moves : allMoves) {
       for (auto move : moves) {
         Piece *othPiece = squares[move]->getPiece();
+        // Sees if the move is a move that can stop the check
         if (find(validCheckMoves.begin(), validCheckMoves.end(), move) != validCheckMoves.end()) {
           if (othPiece != nullptr) {
+            // Sees if we can take the piece
             if (othPiece->getColour() != other) {
               // cout << coord << " " << move << endl;
               addMove(coord + " " + move, pieceIsWhite, validWhiteMoves, validBlackMoves);             
@@ -195,9 +200,10 @@ void Board::flattenCheckedMoves(string coord, PieceEnum pieceEnum, vector<vector
         Square *square = squares[move].get();
         if (square != nullptr) {
           Piece *othPiece = squares[move]->getPiece();
-          // Checks if the square is empty
+          // Sees if the move is a move that can stop the check
           if (find(validCheckMoves.begin(), validCheckMoves.end(), move) != validCheckMoves.end()) {
             if (othPiece != nullptr) {
+              // Sees if we can take the piece
               if (othPiece->getColour() != other) {
                 // cout << coord << " " << move << endl;
                 addMove(coord + " " + move, pieceIsWhite, validWhiteMoves, validBlackMoves);             
@@ -216,7 +222,7 @@ void Board::flattenCheckedMoves(string coord, PieceEnum pieceEnum, vector<vector
     for (auto moves : allMoves) {
       for (auto move : moves) {
         Piece *othPiece = squares[move]->getPiece();
-        // Checks if the square is empty
+        /// Sees if the move is a move that can stop the check
         if (find(validCheckMoves.begin(), validCheckMoves.end(), move) != validCheckMoves.end()) {
           if (othPiece == nullptr)  {
             // cout << coord << " " << move << endl;
@@ -236,6 +242,7 @@ void Board::flattenCheckedMoves(string coord, PieceEnum pieceEnum, vector<vector
       Square *square = squares[coords].get();
       if (square != nullptr) {
         Piece *tempPiece = square->getPiece();
+        // Sees if the move is a move that can stop the check
         if (find(validCheckMoves.begin(), validCheckMoves.end(), coords) != validCheckMoves.end()) {
           if (tempPiece != nullptr) {
             if (tempPiece->getColour() != other) {
@@ -411,10 +418,7 @@ string Board::isChecked(bool isWhiteChecked) {
   return "";
 }
 
-// bool isPiecePinned(string coord, bool isWhiteTurn) {
-//   Piece* piece = squares[coord]->getPiece();
-// }
-
+// Returns a vector of the coordinates that can help block/ stop the check
 vector<string> Board::possibleUncheckMoves(string checkCoord, bool isWhiteChecked) {
   vector<string> possibleUncheckMoves;
   string coord;
@@ -423,31 +427,42 @@ vector<string> Board::possibleUncheckMoves(string checkCoord, bool isWhiteChecke
   } else {
     coord = blackKingCoord;
   }
+  // Gets the coordinates of the king and the pice thats checking the king
   int x1 = coord[0] - 97 + 1;
   int y1 = coord[1] - 49 + 1;
   int x2 = checkCoord[0] - 97 + 1; 
   int y2 = checkCoord[1] - 49 + 1;
+  // if x1 == x2, then the king and the checking piece are on the same row, so we need to find
+  //   all the coordinates between those 2 piece on that row, including the checking peice itself because
+  //   taking the checking piece also stops the check
   if (x1 == x2) {
+    // Makes y2 the bigger one
     if (y1 >= y2) {
       int temp = y1;
       int y1 = y2;
       int y2 = temp;
     }
+    // Gets the coordinates between the 2 points
     for (int i = 1; y1 + i <= y2; i++) {
       possibleUncheckMoves.emplace_back(string(1, char(x1 + 96)) + to_string(y1 + i));
     }
-  } else if (x1 == x2) {
+  } else if (y1 == y2) {
+    // if y1 == y2, then theyre on the same column
+    // Makes x2 the bigger one
     if (x1 >= x2) {
       int temp = x1;
       int x1 = x2;
       int x2 = temp;
     }
+    // gets the coordinates between the 2 pints
     for (int i = 1; x1 + i <= x2; i++) {
       possibleUncheckMoves.emplace_back(string(1, char(x1 + 96) + i) + to_string(y1));
     }
   } else if (abs(x1 - x2) == abs(y1 - y2)) {
+    // This means that theyre on a diagonal
     int i1;
     int i2;
+    // Calculates whether or not we need to subtract/ add from x1 and y1 
     if (x2 - x1 >= 0) {
       i1 = 1;
     } else {
@@ -458,6 +473,7 @@ vector<string> Board::possibleUncheckMoves(string checkCoord, bool isWhiteChecke
     } else {
       i2 = -1;
     }
+    // How long the loop runs for
     int stopLoop = abs(x2 - x1);
     int i = 1;
     while (i <= stopLoop) {
@@ -467,6 +483,8 @@ vector<string> Board::possibleUncheckMoves(string checkCoord, bool isWhiteChecke
       i++;
     }
   } else {
+    // If the checkin piece is not on any vertical, horizontal or diagonal, then the checking piece
+    //   must be a knight. Therefore, the only way to stop the check is by taking the knight
     possibleUncheckMoves.emplace_back(checkCoord);
   }
   return possibleUncheckMoves;
@@ -492,11 +510,6 @@ void Board::findAllValidMoves(bool firstTurn) {
     // Gets the coordinates to stop the check
     validCheckMoves =  possibleUncheckMoves(checkStatus, isWhiteTurn);
   }
-
-
-  isChecked = false;
-
-
   // Iterates through every square on the board
   for (char col = 'a'; col < cols + 97; ++col) {
     for (int row = 1; row <= rows; ++row) {
