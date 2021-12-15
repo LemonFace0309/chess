@@ -32,6 +32,6 @@ int main(int argc, char *argv[]) {
     game->start();
   } else if (cmd == "setup") {
     auto game = make_unique<Game>();
-    game->start();
+    game->setup();
   }
 }
