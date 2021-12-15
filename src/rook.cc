@@ -30,25 +30,25 @@ vector<vector<string>> Rook::getValidMoves(string coord, int cols, int rows, boo
   vector<string> rightMoves;
 
   // gets up moves
-  for (int i = 1; y + 1 <= rows; ++i) {
+  for (int i = 1; y + i <= rows; ++i) {
     char c = x + 96;
     upMoves.push_back(string(1, char(c)) + to_string(y + i));
   }
 
   // gets down moves
-  for (int i = 1; y - 1 >= 1; ++i) {
+  for (int i = 1; y - i >= 1; ++i) {
     char c = x + 96;
     downMoves.push_back(string(1, char(c)) + to_string(y - i));
   }
 
   // gets left moves
-  for (int i = 1; x - 1 >= 1; ++i) {
+  for (int i = 1; x - i >= 1; ++i) {
     char c = x - i + 96;
     leftMoves.push_back(string(1, char(c)) + to_string(y));
   }
 
   // gets right moves
-  for (int i = 1; x + 1 <= cols; ++i) {
+  for (int i = 1; x + i <= cols; ++i) {
     char c = x + i + 96;
     rightMoves.push_back(string(1, char(c)) + to_string(y));
   }

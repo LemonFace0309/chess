@@ -13,6 +13,7 @@ class Piece {
     // Constructor
     Piece(ColourEnum colour);
 
+    ColourEnum getColour();
     // Returns the piece's type. Uppercase letters are white pieces, while lowercase is black
     virtual PieceEnum getPieceType() = 0;
 

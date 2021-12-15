@@ -5,3 +5,7 @@
 #include "colourEnum.cc"
 
 Piece::Piece(ColourEnum colour) : colour{colour} {};
+
+ColourEnum Piece::getColour{
+    return colour;
+};

@@ -23,5 +23,6 @@ class Board : public Subject {
     Square *getRecentSquareWithAction();
     bool setSquare(PieceEnum p, bool isWhiteTurn, std::string coord, bool firstTurn = false); // true for success, false otherwise
     void finishTurn(); // renders the board
+    vector<string> getValidMoves();
 };
 #endif

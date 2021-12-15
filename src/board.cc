@@ -41,3 +41,78 @@ bool Board::setSquare(PieceEnum p, bool isWhiteTurn, string coord, bool firstTur
 void Board::finishTurn() {
   renderObservers();
 }
+
+vector<string> Board::getValidMoves() {
+  vector<string> validMoves;
+  ColourEnum turnColour;
+  if (isWhiteTurn) {
+    turnColour = ColourEnum::White;
+  } else {
+    turnColour = ColourEnum::Black;
+  }
+  for (char col = 'a'; col < cols + 97; ++col) {
+    for (int row = 1; row <= rows; ++row) {
+      const string coord = string(1, col) + to_string(row);
+      Piece *piece = squares[coord].getPiece();
+      if (piece != nullptr && piece.getColour() == turnColour) {
+        const PieceEnum pieceEnum = piece->getPieceType();
+        vector<vector<string>> allMoves = piece->getValidMoves();
+        switch(pieceEnum) {
+        case Q:
+        case q:
+        case R:
+        case r:
+        case B:
+        case b:          
+          for (auto moves : allMoves) {
+            for (auto move : moves) {
+              Piece *othPiece = squares[move].getPiece();
+              if (othPiece != nullptr) {
+                if (othPiece.getColour() != turnColour) {
+                  validMoves.emplace_back(move);
+                }
+                break;
+              } else {
+                validMoves.emplace_back(move);
+              }
+            }
+          }
+          break;
+        case N:
+        case n:
+          for (auto moves : allMoves) {
+            validMoves.insert(validMoves.end(), moves.begin(), moves.end());
+          }
+          break;
+        case P:
+        case p:
+          for (auto moves : allMoves) {
+            for (auto move : moves) {
+              Piece *othPiece = squares[move].getPiece();
+              if (othPiece == nullptr) {
+                validMoves.emplace_back(move);
+              }
+            }
+          }
+          break;
+        case K:
+        case k:
+          for (auto moves : allMoves) {
+            for (auto move : moves) {
+              Piece *othPiece = squares[move].getPiece();
+              if (othPiece != nullptr) {
+                if (othPiece.getColour() != turnColour) {
+                  validMoves.emplace_back(move);
+                }
+              } else {
+                validMoves.emplace_back(move);
+              }
+            }
+          }
+          break;
+        }
+      }
+    }
+  }
+  return validMoves;
+}
