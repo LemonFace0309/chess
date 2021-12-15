@@ -8,8 +8,10 @@
 #include "pieceEnum.cc"
 using namespace std;
 
+// Constructor
 TextDisplay::TextDisplay(Board *subject, int cols, int rows) : subject{subject}, rows{rows}, cols{cols} {}
 
+// Notifies the observer
 void TextDisplay::notify() {
   Square *changedSquare = subject->getRecentSquareWithAction();
   Piece *piece = changedSquare->getPiece();
@@ -18,11 +20,15 @@ void TextDisplay::notify() {
   display[col][row] = piece->getPieceType();
 }
 
+// Renders the game as text
 void TextDisplay::render() {
   for (int row = rows; row >= 1; --rows) {
-    cout << row << " "; // row coordinate
+    // Prints the row coordinates
+    cout << row << " ";
+    // Draws the board's row
     for (int col = 1; col <= cols; ++col) {
       const PieceEnum pieceEnum = display[col][row];
+      // Outputs the piece or square
       switch(pieceEnum) {
         case K:
           cout << "k";
@@ -63,4 +69,5 @@ void TextDisplay::render() {
   cout << endl;
 }
 
+// Destructor
 TextDisplay::~TextDisplay() {}

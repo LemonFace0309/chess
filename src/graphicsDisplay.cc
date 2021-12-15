@@ -30,14 +30,12 @@ void GraphicsDisplay::render() {
     // Draws the row labels
     window->drawString(x, y, row, Xwindow::Black);
 
-    // Draws the board
+    // Draws the board's row
     x = 60;
     for (int col = 1; col <= cols; ++col) {
       const PieceEnum pieceEnum = display[col][row];
-
       // Determines is square is white or black
       bool isBlackSquare = (row + col) % 2 == 0;
-
       // Sets the square coloring and changes the piece's font color depending
       //   on if the square is black or not
       int squareColor;
@@ -49,10 +47,8 @@ void GraphicsDisplay::render() {
 				squareColor = Xwindow::White;
 				pieceColor = Xwindow::Black;
 			}
-
       // Draws the Square
 			window->drawSquare(x, y, squareColor);
-
       // Draws the piece (string)
       switch(pieceEnum) {
         case K:
@@ -102,7 +98,6 @@ void GraphicsDisplay::render() {
   }
   x = 60;
 	y += 40;
-
   // Draws column coordinates
   for (int col = 1; col <= cols; ++col) {
     char coord = 97 + col - 1;
@@ -112,4 +107,5 @@ void GraphicsDisplay::render() {
 	y += 20;
 }
 
+// Destructor
 GraphicsDisplay::~GraphicsDisplay() {}
