@@ -110,15 +110,16 @@ class InvalidColour {
 
 };
 
-void Game::changeTurn(std::string colour) {
+void Game::changeTurn(string colour) {
   try {
     ColourEnum c = stringToColourEnum[colour];
-    if (!c) throw InvalidColour();
 
-    if (c == White) {
+    if (c == ColourEnum::White) {
       isWhiteTurn = true;
-    } else if (c == Black) {
+    } else if (c == ColourEnum::Black) {
       isWhiteTurn = false;
+    } else {
+      throw InvalidColour();
     }
   } catch(...) {
     cout << "Invalid Colour!" << endl; 
