@@ -19,14 +19,16 @@ int main(int argc, char *argv[]) {
     string str_p1;
     string str_p2;
     cin >> str_p1 >> str_p2;
-    Player p1 = stringToPlayer[str_p1];
-    Player p2 = stringToPlayer[str_p2];
 
     // exit program if players are not recognized
-    if (!p1 || !p2) {
+    if (stringToPlayer.find(str_p1) == stringToPlayer.end() || stringToPlayer.find(str_p2) == stringToPlayer.end()) {
       cout << "Invalid player commands" << endl;
       return 1;
     }
+
+    Player p1 = stringToPlayer[str_p1];
+    Player p2 = stringToPlayer[str_p2];
+
 
     auto game = make_unique<Game>(p1, p2);
     game->start();

@@ -1,5 +1,6 @@
 #include <iostream>
 #include <memory>
+#include <string>
 #include <map>
 
 #include "game.h"
@@ -33,7 +34,36 @@ Game::Game(Player p1, Player p2) {
 }
 
 void Game::start() {
+  // setting white pieces
+  board->setSquare(PieceEnum::R, true, "a1");
+  board->setSquare(PieceEnum::N, true, "b1");
+  board->setSquare(PieceEnum::B, true, "c1");
+  board->setSquare(PieceEnum::Q, true, "d1");
+  board->setSquare(PieceEnum::K, true, "e1");
+  board->setSquare(PieceEnum::B, true, "f1");
+  board->setSquare(PieceEnum::N, true, "g1");
+  board->setSquare(PieceEnum::R, true, "h1");
+  for (int i = 0; i < 8; ++i) {
+    char c = 97 + i;
+    board->setSquare(PieceEnum::P, true, string(1, c) + "2");
+  }
 
+  // setting black pieces
+  for (int i = 0; i < 8; ++i) {
+    char c = 97 + i;
+    board->setSquare(PieceEnum::P, false, string(1, c) + "7");
+  }
+  board->setSquare(PieceEnum::R, false, "a8");
+  board->setSquare(PieceEnum::N, false, "b8");
+  board->setSquare(PieceEnum::B, false, "c8");
+  board->setSquare(PieceEnum::Q, false, "d8");
+  board->setSquare(PieceEnum::K, false, "e8");
+  board->setSquare(PieceEnum::B, false, "f8");
+  board->setSquare(PieceEnum::N, false, "g8");
+  board->setSquare(PieceEnum::R, false, "h8");
+
+  // rendering the game
+  board->finishTurn();
 }
 
 class InvalidPiece {
