@@ -10,6 +10,7 @@ using namespace std;
 Pawn::Pawn(ColourEnum colour) : Piece{colour} {}
 
 PieceEnum Pawn::getPieceType() {
+  // Checks if the piece is black or write
   if (colour == ColourEnum::Black) {
     return PieceEnum::p;
   } else {
