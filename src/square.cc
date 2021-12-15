@@ -13,17 +13,20 @@
 #include "pawn.h"
 using namespace std;
 
-
+// Constructor
 Square::Square(int col, int row) : col{col}, row{row} {};
 
+// Returns the row the square is in
 int Square::getRow() {
   return row;
 }
 
+// Returns the column the square is in
 int Square::getCol() {
   return col;
 }
 
+// Returns the piece on the square
 Piece *Square::getPiece() {
   return piece.get();
 }
@@ -32,10 +35,10 @@ class InvalidPiece {
 
 };
 
-
+// Sets a piece onto the square
 void Square::setPiece(PieceEnum p, bool isWhiteTurn) {
   ColourEnum colour = isWhiteTurn ? ColourEnum::White : ColourEnum::Black;
-
+  // Changes the current piece on the square into the new piece
   switch (P) {
     case PieceEnum::K:
       piece = make_unique<King>(colour);
