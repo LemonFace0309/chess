@@ -257,16 +257,18 @@ void Board::flattenCheckedMoves(string coord, PieceEnum pieceEnum, vector<vector
 }
 
 void Board::move(string coord1, string coord2, bool firstTurn) {
+   cout << "isMoving" << endl;
   PieceEnum p = squares[coord1]->getPiece()->getPieceType();
   Board::setSquare(p, isWhiteTurn, coord2, firstTurn);
   Board::setSquare(PieceEnum::NONE, isWhiteTurn, coord1, firstTurn);
+  isWhiteTurn = !isWhiteTurn;
 }
 
 // Checks if the move is valid
 bool Board::isValidMove(string coord1, string coord2, bool firstTurn) {
   string colourTurn;
   ColourEnum colour;
-  // cout << isWhiteTurn << endl;
+  cout << "isValidMove" << endl;
   if (isWhiteTurn) {
     colourTurn = "white";
     colour = ColourEnum::White;
@@ -276,12 +278,13 @@ bool Board::isValidMove(string coord1, string coord2, bool firstTurn) {
   }
   string move = coord1 + " " + coord2;
   // cout << move << endl;
-   for (auto move : allValidMoves[colourTurn]) {
-    // cout << move << endl;
-  }
+  //  for (auto move : allValidMoves[colourTurn]) {
+  //   cout << move << endl;
+  // }
   // Checks if the move is valid (doesn't include being under check)
   if (find(allValidMoves[colourTurn].begin(), allValidMoves[colourTurn].end(), move)
       != allValidMoves[colourTurn].end()) {
+        //cout << "Keeps track of the old piece at the square in case the move isn't v" << endl;
     // Keeps track of the old piece at the square in case the move isn't valid
     PieceEnum oldP;
     Piece * oldPiece = squares[coord1]->getPiece();
@@ -290,10 +293,12 @@ bool Board::isValidMove(string coord1, string coord2, bool firstTurn) {
     } else {
       oldP = oldPiece->getPieceType();
     }        
+    //cout << "rsbfsdbsdbfsdbfsb" << endl;
     // Temporarily moves the piece
     PieceEnum p = squares[coord1]->getPiece()->getPieceType();
+    //cout << p << endl;
     squares[coord2]->setPiece(p, isWhiteTurn, firstTurn);
-    // cout << isChecked(isWhiteTurn) << endl;
+    // cout << "bbbbbbbbbbbbbbb" << endl;
     // Checks if the king is under check after the move
     if (isWhiteTurn && isChecked(isWhiteTurn) != "") {
       // Undos the move
@@ -497,6 +502,7 @@ void Board::findAllValidMoves(bool firstTurn) {
   vector<string> validCheckMoves;
   // Determines which colour's turn it is
   ColourEnum turnColour;
+  cout << isWhiteTurn << endl;
   if (isWhiteTurn) {
     turnColour = ColourEnum::White;
   } else {
@@ -552,9 +558,9 @@ void Board::findAllValidMoves(bool firstTurn) {
       }
     }
   }
-  for (auto move : validWhiteKingMoves) {
-    // cout << move << endl;
-  }
+  // for (auto move : validWhiteKingMoves) {
+  //   // cout << move << endl;
+  // }
   // Filters out any moves that will put their own king in check
   validWhiteKingMoves = filterKingMoves(validWhiteKingMoves, validBlackMoves);
   validBlackKingMoves = filterKingMoves(validBlackKingMoves, validWhiteMoves);
@@ -562,8 +568,11 @@ void Board::findAllValidMoves(bool firstTurn) {
   validBlackMoves.insert(validBlackMoves.end(), validBlackKingMoves.begin(), validBlackKingMoves.end());
 
   allValidMoves["white"] = validWhiteMoves;
-  for (auto move : allValidMoves["white"]) {
-    cout << move << endl;
-  }
+  // for (auto move : allValidMoves["black"]) {
+  //   cout << move << endl;
+  // }
   allValidMoves["black"] = validBlackMoves;
+  // for (auto move : allValidMoves["black"]) {
+  //   cout << move << endl;
+  // }
 }

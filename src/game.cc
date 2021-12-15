@@ -93,8 +93,8 @@ void Game::begin() {
       board->move(coord1, coord2, turns <= 2);
       turns++;
       // check for checkmate
-      board->findAllValidMoves(turns <= 2);
       board->finishTurn(); // renders the board
+      board->findAllValidMoves(turns <= 2);
     } else if (cmd == "resign") {
       // do something
     }

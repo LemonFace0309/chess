@@ -42,21 +42,27 @@ void Square::setPiece(PieceEnum p, bool isWhiteTurn, bool firstTurn) {
   // Changes the current piece on the square into the new piece
   switch (p) {
     case PieceEnum::K:
+    case PieceEnum::k:
       piece = make_unique<King>(colour);
       break;
     case PieceEnum::Q:
+    case PieceEnum::q:
       piece = make_unique<Queen>(colour);
       break;
     case PieceEnum::B:
+    case PieceEnum::b:
       piece = make_unique<Bishop>(colour);
       break;
     case PieceEnum::R:
+    case PieceEnum::r:
       piece = make_unique<Rook>(colour);
       break;
     case PieceEnum::N:
+    case PieceEnum::n:
       piece = make_unique<Knight>(colour);
       break;
     case PieceEnum::P:
+    case PieceEnum::p:
       piece = make_unique<Pawn>(colour);
       break;
     case PieceEnum::NONE:
