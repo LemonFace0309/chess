@@ -5,14 +5,17 @@
 
 #include "board.h"
 #include "textdisplay.h"
+#include "graphicsDisplay.h"
 #include "square.h"
 #include "playerEnum.cc"
 #include "pieceEnum.cc"
 using namespace std;
 
 Board::Board(const int rows, const int cols) : rows{rows}, cols{cols} {
-  shared_ptr<TextDisplay> td = make_shared<TextDisplay>(this, cols, rows);
-  attach(td);
+  // shared_ptr<TextDisplay> td = make_shared<TextDisplay>(this, cols, rows);
+  // attach(td);
+  shared_ptr<GraphicsDisplay> gd = make_shared<GraphicsDisplay>(this, cols, rows);
+  attach(gd);
 
   for (char col = 'a'; col < cols + 97; ++col) {
     for (int row = 1; row <= rows; ++row) {

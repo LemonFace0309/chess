@@ -5,7 +5,7 @@ DEPENDS=${OBJECTS:.o=.d}
 EXEC=chess
 
 ${EXEC}: ${OBJECTS}
-	${CXX} ${OBJECTS} -o ${EXEC}
+	${CXX} ${OBJECTS} -o ${EXEC}  -lX11
 
 -include ${DEPENDS}
 

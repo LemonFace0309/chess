@@ -10,7 +10,7 @@ using namespace std;
 
 // Constructor
 Xwindow::Xwindow() {
-  int width = squareSize * 12; 
+  int width = squareSize * 11; 
   int height = squareSize * 14;
   d = XOpenDisplay(NULL);
   if (d == NULL) {

@@ -1,8 +1,9 @@
 #include <iostream>
 #include <vector>
+#include <string>
 
 #include "window.h"
-#include "GraphicsDisplay.h"
+#include "graphicsDisplay.h"
 #include "square.h"
 #include "board.h"
 #include "piece.h"
@@ -12,28 +13,37 @@ using namespace std;
 GraphicsDisplay::GraphicsDisplay(Board *subject, int cols, int rows)
  : subject{subject}, 
    rows{rows}, 
-   cols{cols} {}
+   cols{cols} {
+  window = new Xwindow();
+  for (char col = 1; col <= cols; ++col) {
+    vector<PieceEnum> column;
+    for (int row = 1; row <= rows; ++row) {
+      column.push_back(PieceEnum::NONE);
+    }
+    display.push_back(column);
+  }
+}
 
 void GraphicsDisplay::notify() {
   Square *changedSquare = subject->getRecentSquareWithAction();
   Piece *piece = changedSquare->getPiece();
   int row = changedSquare->getRow();
   int col = changedSquare->getCol();
-  display[col][row] = piece->getPieceType();
+  display[col - 1][row - 1] = piece->getPieceType();
 }
 
 void GraphicsDisplay::render() {
     // Sets the x and y coordinates. It starts at 20 for a 20px margin around the game
     int x = 20;
     int y = 20;
-    for (int row = rows; row >= 1; --rows) {
+    for (int row = rows; row >= 1; --row) {
     // Draws the row labels
-    window->drawString(x, y, row, Xwindow::Black);
+    window->drawString(x, y, to_string(row), Xwindow::Black);
 
     // Draws the board's row
-    x = 60;
+    x += 20;
     for (int col = 1; col <= cols; ++col) {
-      const PieceEnum pieceEnum = display[col][row];
+      const PieceEnum pieceEnum = display[col - 1][row - 1];
       // Determines is square is white or black
       bool isBlackSquare = (row + col) % 2 == 0;
       // Sets the square coloring and changes the piece's font color depending
@@ -91,17 +101,18 @@ void GraphicsDisplay::render() {
         default:
 					break;
       }
-			x += 20
+			x += 20;
     }
     x = 20;
 		y += 20;
   }
-  x = 60;
-	y += 40;
+  x = 40;
   // Draws column coordinates
   for (int col = 1; col <= cols; ++col) {
-    char coord = 97 + col - 1;
+    char letter = 97 + col - 1;
+    string coord{letter};
     window->drawString(x, y, coord, Xwindow::Black);
+    x += 20;
   }
   x = 20;
 	y += 20;

@@ -30,20 +30,13 @@ void TextDisplay::notify() {
 
 // Renders the game as text
 void TextDisplay::render() {
-<<<<<<< HEAD
-  for (int row = rows; row >= 1; --rows) {
+  for (int row = rows; row >= 1; --row) {
     // Prints the row coordinates
     cout << row << " ";
     // Draws the board's row
     for (int col = 1; col <= cols; ++col) {
-      const PieceEnum pieceEnum = display[col][row];
-      // Outputs the piece or square
-=======
-  for (int row = rows; row >= 1; --row) {
-    cout << row << " "; // row coordinate
-    for (int col = 1; col <= cols; ++col) {
       const PieceEnum pieceEnum = display[col - 1][row - 1];
->>>>>>> 7b8c8e256c650cfe4ea2b4bedc2e63babe59b786
+      // Outputs the piece or square
       switch(pieceEnum) {
         case k: // black pieces
           cout << "k";
