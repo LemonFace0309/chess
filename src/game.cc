@@ -75,11 +75,13 @@ std::istream & operator>>( std::istream & in, PieceEnum & p ) {
 void Game::setup() {
   string cmd;
   while (true) {
+    cin >> cmd;
     try {
       if (cmd == "+") {
         PieceEnum p;
         string loc;
         cin >> p >> loc;
+
         board->setSquare(p, isWhiteTurn, loc);
         board->finishTurn();
       } else if (cmd == "-") {
@@ -99,8 +101,6 @@ void Game::setup() {
     } catch (...) {
       cout << "Invalid response!" << endl;
     }
-
-    cin >> cmd;
   }
 
   if (cmd == "done") start();

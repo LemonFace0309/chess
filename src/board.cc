@@ -14,9 +14,9 @@ Board::Board(const int rows, const int cols) : rows{rows}, cols{cols} {
   shared_ptr<TextDisplay> td = make_shared<TextDisplay>(this, cols, rows);
   attach(td);
 
-  for (char col = 'a'; col <= cols + 97; ++col) {
+  for (char col = 'a'; col < cols + 97; ++col) {
     for (int row = 1; row <= rows; ++row) {
-      const string coord = to_string(col) + to_string(row);
+      const string coord = string(1, col) + to_string(row);
       squares[coord] = make_unique<Square>(col - 97, row);
     }
   }

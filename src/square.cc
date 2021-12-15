@@ -36,7 +36,7 @@ class InvalidPiece {
 void Square::setPiece(PieceEnum p, bool isWhiteTurn) {
   ColourEnum colour = isWhiteTurn ? ColourEnum::White : ColourEnum::Black;
 
-  switch (P) {
+  switch (p) {
     case PieceEnum::K:
       piece = make_unique<King>(colour);
       break;

@@ -8,39 +8,65 @@
 #include "pieceEnum.cc"
 using namespace std;
 
-TextDisplay::TextDisplay(Board *subject, int cols, int rows) : subject{subject}, rows{rows}, cols{cols} {}
+TextDisplay::TextDisplay(Board *subject, int cols, int rows) : subject{subject}, rows{rows}, cols{cols} {
+  for (char col = 1; col <= cols; ++col) {
+    vector<PieceEnum> column;
+    for (int row = 1; row <= rows; ++row) {
+      column.push_back(PieceEnum::NONE);
+    }
+    display.push_back(column);
+  }
+}
 
 void TextDisplay::notify() {
   Square *changedSquare = subject->getRecentSquareWithAction();
   Piece *piece = changedSquare->getPiece();
   int row = changedSquare->getRow();
   int col = changedSquare->getCol();
-  display[col][row] = piece->getPieceType();
+  display[col - 1][row - 1] = piece->getPieceType();
 }
 
 void TextDisplay::render() {
-  for (int row = rows; row >= 1; --rows) {
+  for (int row = rows; row >= 1; --row) {
     cout << row << " "; // row coordinate
     for (int col = 1; col <= cols; ++col) {
-      const PieceEnum pieceEnum = display[col][row];
+      const PieceEnum pieceEnum = display[col - 1][row - 1];
       switch(pieceEnum) {
-        case K:
+        case k: // black pieces
           cout << "k";
           break;
-        case Q:
+        case q:
           cout << "q";
           break;
-        case B:
+        case b:
           cout << "b";
           break;
-        case R:
+        case r:
           cout << "r";
           break;
-        case N:
+        case n:
           cout << "n";
           break;
-        case P:
+        case p:
           cout << "p";
+          break;
+        case K: // white pieces
+          cout << "K";
+          break;
+        case Q:
+          cout << "Q";
+          break;
+        case B:
+          cout << "B";
+          break;
+        case R:
+          cout << "R";
+          break;
+        case N:
+          cout << "N";
+          break;
+        case P:
+          cout << "P";
           break;
         default:
           // determines is square is white or black
@@ -56,6 +82,7 @@ void TextDisplay::render() {
   cout << endl;
 
   // prints column coordinates
+  cout << "  ";
   for (int col = 1; col <= cols; ++col) {
     char coord = 97 + col - 1;
     cout << coord;
