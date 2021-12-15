@@ -25,6 +25,8 @@ class Board : public Subject {
   public:
     Board(const int rows, const int cols);
     Square *getRecentSquareWithAction();
+    bool isValidMove(std::string coord1, std::string coord2, bool firstTurn);
+    bool isChecked(bool isWhiteChecked);
     void flattenMoves(std::string coord, PieceEnum pieceEnum, std::vector<std::vector<std::string>> allMoves, ColourEnum other,
                       std::vector<std::string> &validWhiteMoves, std::vector<std::string> &validBlackMoves);
     bool setSquare(PieceEnum p, bool isWhiteTurn, std::string coord, bool firstTurn = false); // true for success, false otherwise
