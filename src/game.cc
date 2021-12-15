@@ -84,7 +84,7 @@ void Game::begin() {
       while (!validMove) {
         cin >> coord1 >> coord2;
 
-        // checks for valid move
+        // checks for valid move on square
       }
       // check for checks
       // check for checkmate
