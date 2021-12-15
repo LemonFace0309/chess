@@ -164,9 +164,25 @@ bool isValidMove(string coord1, string coord2, bool firstTurn) {
   }
   if (find(allMoves[colourTurn].begin(), allMoves[colourTurn].end(), item) 
       != allMoves[colourTurn].end()) {
-        PieceEnum p = squares[coord1]->getPiece()->getPieceType();
+    PieceEnum oldP;
+    Piece * oldPiece = squares[coord1]->getPiece();
+    if (oldPiece == nullptr) {
+      oldP = PieceEnum::NONE;
+    } else {
+      oldP = oldPiece.getPieceType();
+    }        
+    PieceEnum p = squares[coord1]->getPiece()->getPieceType();
     squares[coord2]->setPiece(p, isWhiteTurn, firstTurn);
-
+    if (isWhiteTurn && isChecked(isWhiteTurn)) {
+      squares[coord1]->setPiece(p, isWhiteTurn, firstTurn);
+      squares[coord2]->setPiece(oldP, isWhiteTurn, firstTurn);
+      return false;
+    } else if (!isWhiteTurn && isChecked(!isWhiteTurn)) {
+      squares[coord1]->setPiece(p, isWhiteTurn, firstTurn);
+      squares[coord2]->setPiece(oldP, isWhiteTurn, firstTurn);
+      return false;
+    }
+    return true;
   }
   return false;
 }
