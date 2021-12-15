@@ -36,13 +36,16 @@ vector<vector<string>> Knight::getValidMoves(string coord, int cols, int rows, b
   if (y + 2 > rows) {
     upLeft.clear();
     upRight.clear();
-  } else if (x + 2 > cols) {
+  } 
+  if (x + 2 > cols) {
     rightUp.clear();
     rightDown.clear();
-  } else if (x - 2 < 1) {
+  }
+   if (x - 2 < 1) {
     leftDown.clear();
     leftUp.clear();
-  } else if (y - 2 < 1) {
+  } 
+ if (y - 2 < 1) {
     downRight.clear();
     downLeft.clear();
   }

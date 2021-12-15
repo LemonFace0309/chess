@@ -15,14 +15,20 @@ class Board : public Subject {
     const int cols;
     Player players[2];
     std::map<std::string, std::unique_ptr<Square>> squares;
+    std::map<std::string, std::vector<std::string>> allValidMoves;
     std::string lastAction; // coordinate
     bool isWhiteTurn;
     int difficulty;
+    std::string whiteKingCoord;
+    std::string blackKingCoord;
+    //string playerUnderCheck; // in the form of "[(b or w)] [from coordinate (ex: e1)]"
   public:
     Board(const int rows, const int cols);
     Square *getRecentSquareWithAction();
+    void flattenMoves(std::string coord, PieceEnum pieceEnum, std::vector<std::vector<std::string>> allMoves, ColourEnum other,
+                      std::vector<std::string> &validWhiteMoves, std::vector<std::string> &validBlackMoves);
     bool setSquare(PieceEnum p, bool isWhiteTurn, std::string coord, bool firstTurn = false); // true for success, false otherwise
     void finishTurn(); // renders the board
-    std::vector<std::string> getValidMoves(bool firstTurn = false);
+    void findAllValidMoves(bool firstTurn = false);
 };
 #endif

@@ -85,6 +85,9 @@ void Game::begin() {
         cin >> coord1 >> coord2;
 
         // checks for valid move on square
+        string move = coord1 + " " + coord2;
+        
+        board->findAllValidMoves(bool firstTurn);
       }
       // check for checks
       // check for checkmate
