@@ -108,7 +108,7 @@ void Game::begin() {
   int turns = 1;
 
   while (true) {
-    ColourEnum oppColour = isWhiteTurn ? ColourEnum::Black :  ColourEnum::White;
+    ColourEnum oppColour = colour == ColourEnum::White ? ColourEnum::Black :  ColourEnum::White;
     string cmd;
     cin >> cmd;
     if (cin.eof()) {
