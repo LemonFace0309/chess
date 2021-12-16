@@ -35,9 +35,9 @@ Board::Board(const int rows, const int cols) : rows{rows}, cols{cols} {
   setDefaults();
   shared_ptr<TextDisplay> td = make_shared<TextDisplay>(this, cols, rows);
   attach(td);
-  window = make_shared<Xwindow>();
-  shared_ptr<GraphicsDisplay> gd = make_shared<GraphicsDisplay>(this, cols, rows, window);
-  attach(gd);
+  // window = make_shared<Xwindow>();
+  // shared_ptr<GraphicsDisplay> gd = make_shared<GraphicsDisplay>(this, cols, rows, window);
+  // attach(gd);
 
   for (char col = 'a'; col < cols + 97; ++col) {
     for (int row = 1; row <= rows; ++row) {
