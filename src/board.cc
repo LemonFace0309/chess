@@ -612,6 +612,11 @@ void Board::findAllValidMoves(bool firstTurn) {
   // Check checkmate
   // 1. no valid moves and currently checked
   // 2. valid moves lead to another check and currently checked
+  if (isChecked && validWhiteMoves.empty()) {
+    setWinner(ColourEnum::Black);
+  } else if (isChecked && validBlackMoves.empty()) {
+    setWinner(ColourEnum::White);
+  }
 
   allValidMoves["white"] = validWhiteMoves;
   allValidMoves["black"] = validBlackMoves;
