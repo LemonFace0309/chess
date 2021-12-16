@@ -10,7 +10,7 @@ using namespace std;
 
 // Constructor
 Xwindow::Xwindow() {
-  int width = squareSize * 11; 
+  int width = squareSize * 14; 
   int height = squareSize * 14;
   d = XOpenDisplay(NULL);
   if (d == NULL) {
@@ -67,6 +67,12 @@ void Xwindow::drawSquare(int x, int y, int colour) {
   // Changes the squares's color and draws the square
   XSetForeground(d, gc, colours[colour]);
   XFillRectangle(d, w, gc, x, y, squareSize, squareSize);
+  XSetForeground(d, gc, colours[Black]);
+}
+
+void Xwindow::clearRow(int y) {
+  XSetForeground(d, gc, colours[White]);
+  XFillRectangle(d, w, gc, 0, y, squareSize * 14, squareSize);
   XSetForeground(d, gc, colours[Black]);
 }
 

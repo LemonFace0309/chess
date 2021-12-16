@@ -19,6 +19,7 @@ class Game {
     void addPoints(ColourEnum winner, ColourEnum loser, bool stalemate = false);
     void printScore();
     void setWinner(ColourEnum winner, ColourEnum loser, bool stalemate = false);
+    void printMessage(std::string msg);
   public:
     Game();
     Game(Player p1, Player p2);

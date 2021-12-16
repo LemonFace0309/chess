@@ -10,11 +10,12 @@
 #include "pieceEnum.cc"
 using namespace std;
 
-GraphicsDisplay::GraphicsDisplay(Board *subject, int cols, int rows)
+GraphicsDisplay::GraphicsDisplay(Board *subject, int cols, int rows, shared_ptr<Xwindow> window)
  : subject{subject}, 
    rows{rows}, 
-   cols{cols} {
-  window = new Xwindow();
+   cols{cols},
+   window{window} {
+  // window = make_unique<Xwindow>();
   for (char col = 1; col <= cols; ++col) {
     vector<PieceEnum> column;
     for (int row = 1; row <= rows; ++row) {
@@ -29,7 +30,7 @@ void GraphicsDisplay::notify() {
   Piece *piece = changedSquare->getPiece();
   int row = changedSquare->getRow();
   int col = changedSquare->getCol();
-  display[col - 1][row - 1] = piece->getPieceType();
+  display[col - 1][row - 1] = piece ? piece->getPieceType() : PieceEnum::NONE;
 }
 
 void GraphicsDisplay::render() {
@@ -63,7 +64,6 @@ void GraphicsDisplay::render() {
       switch(pieceEnum) {
         case K:
 					window->drawString(x, y, "K", pieceColor);
-          cout << "k";
           break;
         case Q:
           window->drawString(x, y, "Q", pieceColor);

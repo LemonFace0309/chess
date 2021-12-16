@@ -5,6 +5,7 @@
 #include <sstream>
 #include <algorithm>
 
+#include "window.h"
 #include "board.h"
 #include "textdisplay.h"
 #include "graphicsDisplay.h"
@@ -34,8 +35,9 @@ Board::Board(const int rows, const int cols) : rows{rows}, cols{cols} {
   setDefaults();
   shared_ptr<TextDisplay> td = make_shared<TextDisplay>(this, cols, rows);
   attach(td);
-  // shared_ptr<GraphicsDisplay> gd = make_shared<GraphicsDisplay>(this, cols, rows);
-  // attach(gd);
+  window = make_shared<Xwindow>();
+  shared_ptr<GraphicsDisplay> gd = make_shared<GraphicsDisplay>(this, cols, rows, window);
+  attach(gd);
 
   for (char col = 'a'; col < cols + 97; ++col) {
     for (int row = 1; row <= rows; ++row) {
@@ -632,6 +634,13 @@ void Board::findAllValidMoves(bool firstTurn) {
 
   allValidMoves["white"] = validWhiteMoves;
   allValidMoves["black"] = validBlackMoves;
+}
+
+void Board::displayGraphicText(string msg) {
+  int x = 0;
+  int y = 240;
+  window->clearRow(y);
+  window->drawString(x, y, msg, Xwindow::Black);
 }
 
 Board::~Board() {};
