@@ -291,7 +291,6 @@ void Board::flattenCheckedMoves(string coord, PieceEnum pieceEnum, vector<vector
 }
 
 void Board::move(string coord1, string coord2, bool firstTurn) {
-   cout << "isMoving" << endl;
   PieceEnum p = squares[coord1]->getPiece()->getPieceType();
   Board::setSquare(p, isWhiteTurn, coord2, firstTurn);
   Board::setSquare(PieceEnum::NONE, isWhiteTurn, coord1, firstTurn);
