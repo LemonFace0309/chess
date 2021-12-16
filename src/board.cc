@@ -134,12 +134,10 @@ void Board::flattenMoves(string coord, PieceEnum pieceEnum, vector<vector<string
         if (othPiece != nullptr) {
             // Checks if the piece at the square is takeable
             if (othPiece->getColour() != other) {
-              // cout << coord << " " << move << endl;
               addMove(coord + " " + move, pieceIsWhite, validWhiteMoves, validBlackMoves);                  
             }
             break;
           } else {
-            // cout << coord << " " << move << endl;
             addMove(coord + " " + move, pieceIsWhite, validWhiteMoves, validBlackMoves);     
           }
         }
@@ -155,12 +153,10 @@ void Board::flattenMoves(string coord, PieceEnum pieceEnum, vector<vector<string
           if (othPiece != nullptr) {
             // Checks if the piece at the square is takeable
             if (othPiece->getColour() != other) {
-              // cout << coord << " " << move << endl;
               addMove(coord + " " + move, pieceIsWhite, validWhiteMoves, validBlackMoves);                  
             }
             
           } else {
-            // cout << coord << " " << move << endl;
             addMove(coord + " " + move, pieceIsWhite, validWhiteMoves, validBlackMoves);     
           }
         }   
@@ -172,7 +168,6 @@ void Board::flattenMoves(string coord, PieceEnum pieceEnum, vector<vector<string
         Piece *othPiece = squares[move]->getPiece();
         // Checks if the square is empty
         if (othPiece == nullptr) {
-          // cout << coord << " " << move << endl;
           addMove(coord + " " + move, pieceIsWhite, validWhiteMoves, validBlackMoves);    
         }
       }
@@ -215,12 +210,10 @@ void Board::flattenCheckedMoves(string coord, PieceEnum pieceEnum, vector<vector
           if (othPiece != nullptr) {
             // Sees if we can take the piece
             if (othPiece->getColour() != other) {
-              // cout << coord << " " << move << endl;
               addMove(coord + " " + move, pieceIsWhite, validWhiteMoves, validBlackMoves);             
             }
             break;
           } else {
-            // cout << coord << " " << move << endl;
             addMove(coord + " " + move, pieceIsWhite, validWhiteMoves, validBlackMoves);
             break;     
           }
@@ -239,12 +232,10 @@ void Board::flattenCheckedMoves(string coord, PieceEnum pieceEnum, vector<vector
             if (othPiece != nullptr) {
               // Sees if we can take the piece
               if (othPiece->getColour() != other) {
-                // cout << coord << " " << move << endl;
                 addMove(coord + " " + move, pieceIsWhite, validWhiteMoves, validBlackMoves);             
               }
               break;
             } else {
-              // cout << coord << " " << move << endl;
               addMove(coord + " " + move, pieceIsWhite, validWhiteMoves, validBlackMoves);
               break;     
             }
@@ -259,7 +250,6 @@ void Board::flattenCheckedMoves(string coord, PieceEnum pieceEnum, vector<vector
         /// Sees if the move is a move that can stop the check
         if (find(validCheckMoves.begin(), validCheckMoves.end(), move) != validCheckMoves.end()) {
           if (othPiece == nullptr)  {
-            // cout << coord << " " << move << endl;
             addMove(coord + " " + move, pieceIsWhite, validWhiteMoves, validBlackMoves);               
           }
           break;  
@@ -280,7 +270,6 @@ void Board::flattenCheckedMoves(string coord, PieceEnum pieceEnum, vector<vector
         if (find(validCheckMoves.begin(), validCheckMoves.end(), coords) != validCheckMoves.end()) {
           if (tempPiece != nullptr) {
             if (tempPiece->getColour() != other) {
-              // cout << coord << " " << coords << endl;
               addMove(coord + " " + coords, pieceIsWhite, validWhiteMoves, validBlackMoves);             
             }
           }
@@ -416,13 +405,9 @@ string Board::isPlayerChecked(bool isWhiteTurn) {
       if (square != nullptr) {
         // Checks if the piece at the coordinate is an opposing bishop or queen, since only
         //   bishops and queens can move diagonally
-        //cout << bcoord << endl;
         Piece * piece = square->getPiece();
         if (piece != nullptr) {
           if (piece->getColour() != colour) {
-            // cout << bcoord << endl;
-            // cout << piece->getPieceType();
-            // cout << " Color " << piece->getColour() << endl;
             if (isWhiteTurn) {
               if (piece->getPieceType() == PieceEnum::b || piece->getPieceType() == PieceEnum::q)
                 return bcoord;
