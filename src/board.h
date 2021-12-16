@@ -16,7 +16,6 @@ class Board : public Subject {
     const int rows;
     const int cols;
     int difficulty;
-    // Player players[2];
     ColourEnum winner;
     ColourEnum loser;
     std::shared_ptr<Xwindow> window;
@@ -33,7 +32,6 @@ class Board : public Subject {
     void flattenCheckedMoves(std::string coord, PieceEnum pieceEnum, std::vector<std::vector<std::string>> allMoves, 
                              std::vector<std::string> validCheckMoves, ColourEnum other, std::vector<std::string> &validWhiteMoves, 
                              std::vector<std::string> &validBlackMoves);
-    std::string isPlayerChecked(bool isWhiteTurn);   
     void findAllValidMoves(bool firstTurn = false);
   public:
     Board(const int rows, const int cols);
@@ -43,10 +41,12 @@ class Board : public Subject {
     std::vector<std::string> possibleUncheckMoves(std::string checkCoord, bool isWhiteTurn);
     bool setSquare(PieceEnum p, bool isWhiteTurn, std::string coord, bool firstTurn = false); // true for success, false otherwise
     void reset();
+    void setTurn(bool isWhiteTurn);
     ColourEnum getLoser();
     void setLoser(ColourEnum c);
     ColourEnum getWinner();
     void setWinner(ColourEnum c);
+    std::string isPlayerChecked(bool isWhiteTurn);
     void render(); // renders the board
     void finishTurn(bool firstTurn = false); // ends the turn and renders the board
     void displayGraphicText(std::string msg);
