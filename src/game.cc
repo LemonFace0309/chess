@@ -105,7 +105,6 @@ void Game::begin() {
   ColourEnum colour = isWhiteTurn ? ColourEnum::White :  ColourEnum::Black;
   board->setTurn(isWhiteTurn);
   cout << "Let's begin our game! We'll start with " << colourEnumToString[colour] << endl;
-  int turns = 1;
 
   while (true) {
     ColourEnum oppColour = colour == ColourEnum::White ? ColourEnum::Black :  ColourEnum::White;
@@ -128,17 +127,16 @@ void Game::begin() {
         }
 
         // checks for valid move on square
-        validMove = board->isValidMove(coord1, coord2, turns <= 2);
+        validMove = board->isValidMove(coord1, coord2, false);
         if (!validMove) {
           cout << "Invalid Move!" << endl;
         }
       }
-      board->move(coord1, coord2, turns <= 2);
-      board->finishTurn(turns <= 2); // renders the board and calculates valid moves
+      board->move(coord1, coord2);
+      board->finishTurn(false); // renders the board and calculates valid moves
 
       if (board->getWinner() != ColourEnum::NO_COLOUR) { // checkmate!
         setWinner(board->getWinner(), board->getLoser());
-        turns = 0;
       } else { // outputting message for next user
         cout << colourEnumToString[colour] << " move over! " << colourEnumToString[oppColour] << " turn now 😁" << endl;
         if (board->isPlayerChecked(oppColour) != "") {
@@ -146,12 +144,10 @@ void Game::begin() {
         }
       }
 
-      ++turns;
     } else if (cmd == "resign") {
       board->setWinner(oppColour);
       board->setLoser(colour);
       setWinner(oppColour, colour);
-      turns = 1;
     } else {
       // reads till end of line to prevent Invalid response from being printed out multiple times
       while (cin.peek() != '\n') {

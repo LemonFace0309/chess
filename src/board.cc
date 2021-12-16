@@ -283,10 +283,10 @@ void Board::flattenCheckedMoves(string coord, PieceEnum pieceEnum, vector<vector
   }
 }
 
-void Board::move(string coord1, string coord2, bool firstTurn) {
+void Board::move(string coord1, string coord2) {
   PieceEnum p = squares[coord1]->getPiece()->getPieceType();
-  Board::setSquare(p, isWhiteTurn, coord2, firstTurn);
-  Board::setSquare(PieceEnum::NONE, isWhiteTurn, coord1, firstTurn);
+  Board::setSquare(p, isWhiteTurn, coord2);
+  Board::setSquare(PieceEnum::NONE, isWhiteTurn, coord1);
   isWhiteTurn = !isWhiteTurn;
 }
 
@@ -555,12 +555,13 @@ void Board::findAllValidMoves(bool firstTurn) {
       const string coord = string(1, col) + to_string(row);
       // Checks if there's a piece on the square
       Piece *piece = squares[coord]->getPiece();
+      bool isFirstTurn = squares[coord]->isFirstTurn();
 
       if (piece != nullptr) {
         bool pieceIsWhite = piece->getColour() == ColourEnum::White;
         const PieceEnum pieceEnum = piece->getPieceType();
         // Gets all the potential moves of the piece at coord
-        vector<vector<string>> allMoves = piece->getValidMoves(coord, cols, rows, firstTurn);
+        vector<vector<string>> allMoves = piece->getValidMoves(coord, cols, rows, isFirstTurn);
         // Filters out all the non-valid moves
         if (isChecked) {
           // like flattenMoves except the only allowed moves are moves that stop the check

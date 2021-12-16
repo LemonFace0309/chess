@@ -25,6 +25,9 @@ class Square {
     // Returns the type of piece on the square
     Piece *getPiece();
 
+    // Returns if it's the first turn for the square
+    bool isFirstTurn();
+
     // Sets a piece onto the square
     void setPiece(PieceEnum p, bool isWhiteTurn, bool firstTurn = false);
 

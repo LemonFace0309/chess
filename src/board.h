@@ -33,7 +33,7 @@ class Board : public Subject {
     void findAllValidMoves(bool firstTurn = false);
   public:
     Board(const int rows, const int cols);
-    void move(std::string coord1, std::string coord2, bool firstTurn);
+    void move(std::string coord1, std::string coord2);
     Square *getRecentSquareWithAction();
     bool isValidMove(std::string coord1, std::string coord2, bool firstTurn);
     std::vector<std::string> possibleUncheckMoves(std::string checkCoord, bool isWhiteTurn);

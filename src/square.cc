@@ -35,6 +35,10 @@ class InvalidPiece {
 
 };
 
+bool Square::isFirstTurn() {
+  return firstMove;
+}
+
 // Sets a piece onto the square
 void Square::setPiece(PieceEnum p, bool isWhiteTurn, bool firstTurn) {
   firstMove = firstTurn;
