@@ -616,6 +616,28 @@ void Board::findAllValidMoves(bool firstTurn) {
     setWinner(ColourEnum::Black);
   } else if (isChecked && validBlackMoves.empty()) {
     setWinner(ColourEnum::White);
+  } 
+  if (isChecked) {
+    vector<string> validMoves;
+    if (isWhiteTurn) {
+      validMoves = validWhiteMoves;
+    } else {
+      validMoves = validBlackMoves;
+    }
+    bool isCheckMate = true;
+    for (auto move : validMoves) {
+      istringstream coords{ move };
+      string coord1;
+      string coord2;
+      coords >> coord1;
+      coords >> coord2;
+      if (isValidMove(coord1, coord2, firstTurn)) {
+        isCheckMate = false;
+      }        
+    }
+    if (isCheckMate) {
+      setWinner(turnColour);      
+    }
   }
 
   allValidMoves["white"] = validWhiteMoves;
