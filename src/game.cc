@@ -155,7 +155,6 @@ void Game::begin() {
         ostringstream ss;
         ss << colourEnumToString[colour] << " move over! " << colourEnumToString[oppColour] << " turn now :D";
         printMessage(ss.str());
-        cout <<  << endl;
         if (board->isPlayerChecked(oppColour) != "") {
           ostringstream ss2;
           ss2 << "Check! :O D: :X" << colourEnumToString[oppColour] << " you king is threatened!";
