@@ -94,6 +94,7 @@ void TextDisplay::render() {
     cout << coord;
   }
   cout << endl;
+  cout << endl;
 }
 
 // Destructor

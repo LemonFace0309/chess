@@ -3,6 +3,7 @@
 
 enum ColourEnum {
   White,
-  Black
+  Black,
+  NO_COLOUR,
 };
 #endif

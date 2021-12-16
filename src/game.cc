@@ -15,6 +15,11 @@ map<string, ColourEnum> stringToColourEnum = {
   {"black", ColourEnum::Black}
 };
 
+map<ColourEnum, string> colourEnumToString = {
+  {ColourEnum::White, "White"},
+  {ColourEnum::Black, "Black"}
+};
+
 void Game::setDefaults() {
   board = make_unique<Board>(8, 8); 
   isWhiteTurn = true;
@@ -30,6 +35,34 @@ Game::Game(Player p1, Player p2) {
   setDefaults();
   players[0] = p1;
   players[1] = p2;
+}
+
+void Game::addPoints(ColourEnum winner, ColourEnum loser, bool stalemate) {
+  int winnerPoints = stalemate ? 0.5 : 1;
+  int loserPoints = stalemate ? 0.5 : 0;
+
+  score[winner] = winnerPoints;
+  score[loser] = winnerPoints;
+}
+
+void Game::printScore() {
+  cout << "Final Score:" << endl;
+  for (auto &p : stringToColourEnum) {
+    string colour = p.first;
+    colour[0] = toupper(colour[0]);
+    cout << colour << ": " << score[p.second] << endl;
+  }
+}
+
+void Game::setWinner(ColourEnum winner, ColourEnum loser, bool stalemate) {
+  cout << "Congratulations " << colourEnumToString[winner] << ", you won! 🥰" << endl;
+  addPoints(winner, loser, stalemate);
+  printScore();
+  board->reset();
+  cout << endl;
+  cout << "Now starting a new game" << endl;
+  cout << endl;
+  board->render();
 }
 
 void Game::start() {
@@ -62,43 +95,66 @@ void Game::start() {
   board->setSquare(PieceEnum::R, false, "h8", true);
 
   // rendering the game
-  board->finishTurn();
-  board->findAllValidMoves(true);
+  board->finishTurn(true);
 
   // beginning game
   begin();
 }
 
 void Game::begin() {
-  // ColourEnum c = isWhiteTurn ? ColourEnum::White :  ColourEnum::Black;
+  ColourEnum colour = isWhiteTurn ? ColourEnum::White :  ColourEnum::Black;
+  cout << "Let's begin our game! We'll start with " << colourEnumToString[colour] << endl;
+  int turns = 1;
 
   while (true) {
+    ColourEnum oppColour = isWhiteTurn ? ColourEnum::Black :  ColourEnum::White;
     string cmd;
     cin >> cmd;
-    int turns = 1;
+    if (cin.eof()) {
+      printScore();
+      break;
+    }
+
     if (cmd == "move") {
       bool validMove = false;
       string coord1, coord2;
 
-      // get all pseudo moves
       while (!validMove) {
-        cout << "moving" << endl;
         cin >> coord1 >> coord2;
+        if (cin.eof()) {
+          printScore();
+          break;
+        }
 
         // checks for valid move on square
         validMove = board->isValidMove(coord1, coord2, turns <= 2);
-        cout << validMove << endl;
+        if (!validMove) {
+          cout << "Invalid Move!" << endl;
+        }
       }
       board->move(coord1, coord2, turns <= 2);
-      turns++;
-      // check for checkmate
-      board->finishTurn(); // renders the board
-      board->findAllValidMoves(turns <= 2);
+      board->finishTurn(turns <= 2); // renders the board and calculates valid moves
+      if (board->getWinner() != ColourEnum::NO_COLOUR) {
+        setWinner(board->getWinner(), board->getLoser());
+        turns = 0;
+      } else {
+        cout << colourEnumToString[colour] << " move over! " << colourEnumToString[oppColour] << " turn now 😁" << endl;
+      }
+      ++turns;
     } else if (cmd == "resign") {
-      // do something
+      board->setWinner(oppColour);
+      board->setLoser(colour);
+      setWinner(oppColour, colour);
+      turns = 1;
+    } else {
+      // reads till end of line to prevent Invalid response from being printed out multiple times
+      while (cin.peek() != '\n') {
+        cin.ignore();
+      }
+      cout << "Invalid Command!" << endl;
     }
-    // changeTurn(c);
-    // c = isWhiteTurn ? ColourEnum::Black :  ColourEnum::White; // changes colour for next turn
+    changeTurn(colour);
+    colour = oppColour; // changes colour for next turn
   }
 }
 
@@ -155,12 +211,12 @@ void Game::setup() {
         cin >> p >> loc;
 
         board->setSquare(p, isWhiteTurn, loc);
-        board->finishTurn();
+        board->render();
       } else if (cmd == "-") {
         string loc;
         cin >> loc;
         board->setSquare(PieceEnum::NONE, isWhiteTurn, loc);
-        board->finishTurn();
+        board->render();
       } else if (cmd == "=") {
         string colour;
         cin >> colour;

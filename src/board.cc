@@ -9,20 +9,29 @@
 #include "textdisplay.h"
 #include "graphicsDisplay.h"
 #include "square.h"
-#include "playerEnum.cc"
-#include "pieceEnum.cc"
 #include "king.h"
 #include "queen.h"
 #include "bishop.h"
 #include "rook.h"
 #include "knight.h"
 #include "pawn.h"
+#include "playerEnum.cc"
+#include "pieceEnum.cc"
+#include "colourEnum.cc"
 using namespace std;
 
-Board::Board(const int rows, const int cols) : rows{rows}, cols{cols} {
+void Board::setDefaults() {
   whiteKingCoord = "";
   blackKingCoord = "";
   isWhiteTurn = true;
+  winner = ColourEnum::NO_COLOUR;
+  loser = ColourEnum::NO_COLOUR;
+  lastAction = "";
+  allValidMoves.clear();
+}
+
+Board::Board(const int rows, const int cols) : rows{rows}, cols{cols} {
+  setDefaults();
   shared_ptr<TextDisplay> td = make_shared<TextDisplay>(this, cols, rows);
   attach(td);
   // shared_ptr<GraphicsDisplay> gd = make_shared<GraphicsDisplay>(this, cols, rows);
@@ -54,8 +63,33 @@ bool Board::setSquare(PieceEnum p, bool isWhiteTurn, string coord, bool firstTur
   return true;
 }
 
-void Board::finishTurn() {
+void Board::reset() {
+  setDefaults();
+}
+
+ColourEnum Board::getLoser() {
+  return loser;
+}
+
+void Board::setLoser(ColourEnum c) {
+  loser = c;
+}
+
+ColourEnum Board::getWinner() {
+  return winner;
+}
+
+void Board::setWinner(ColourEnum c) {
+  winner = c;
+}
+
+void Board::render() {
   renderObservers();
+}
+
+void Board::finishTurn(bool firstTurn) {
+  render();
+  findAllValidMoves(firstTurn);
 }
 
 
@@ -264,11 +298,13 @@ void Board::move(string coord1, string coord2, bool firstTurn) {
   isWhiteTurn = !isWhiteTurn;
 }
 
-// Checks if the move is valid
+// Checks if the move is valid.
+// coord1 is where the piece is coming from
+// coord2 is where the piece is coming to
 bool Board::isValidMove(string coord1, string coord2, bool firstTurn) {
   string colourTurn;
   ColourEnum colour;
-  cout << "isValidMove" << endl;
+
   if (isWhiteTurn) {
     colourTurn = "white";
     colour = ColourEnum::White;
@@ -277,59 +313,53 @@ bool Board::isValidMove(string coord1, string coord2, bool firstTurn) {
     colour = ColourEnum::Black;
   }
   string move = coord1 + " " + coord2;
-  // cout << move << endl;
-  //  for (auto move : allValidMoves[colourTurn]) {
-  //   cout << move << endl;
-  // }
+
   // Checks if the move is valid (doesn't include being under check)
   if (find(allValidMoves[colourTurn].begin(), allValidMoves[colourTurn].end(), move)
       != allValidMoves[colourTurn].end()) {
-        //cout << "Keeps track of the old piece at the square in case the move isn't v" << endl;
-    // Keeps track of the old piece at the square in case the move isn't valid
-    PieceEnum oldP;
-    Piece * oldPiece = squares[coord1]->getPiece();
-    if (oldPiece == nullptr) {
-      oldP = PieceEnum::NONE;
+    // Keeps track of the old piece at the square in case the move isn't actually valid, ie piece can't be moved
+    //   since it's protecting the king.
+
+    PieceEnum capturedPieceEnum;
+    Piece *capturedPiece = squares[coord2]->getPiece();
+    if (capturedPiece == nullptr) {
+      capturedPieceEnum = PieceEnum::NONE;
     } else {
-      oldP = oldPiece->getPieceType();
+      capturedPieceEnum = capturedPiece->getPieceType();
     }        
-    //cout << "rsbfsdbsdbfsdbfsb" << endl;
+
     // Temporarily moves the piece
     PieceEnum p = squares[coord1]->getPiece()->getPieceType();
-    //cout << p << endl;
     squares[coord2]->setPiece(p, isWhiteTurn, firstTurn);
-    // cout << "bbbbbbbbbbbbbbb" << endl;
+
     // Checks if the king is under check after the move
-    if (isWhiteTurn && isChecked(isWhiteTurn) != "") {
-      // Undos the move
-      squares[coord1]->setPiece(p, isWhiteTurn, firstTurn);
-      squares[coord2]->setPiece(oldP, isWhiteTurn, firstTurn);
-      return false;
-    } else if (!isWhiteTurn && isChecked(!isWhiteTurn) != "") {
-      // Undos the move
-      squares[coord1]->setPiece(p, isWhiteTurn, firstTurn);
-      squares[coord2]->setPiece(oldP, isWhiteTurn, firstTurn);
-      return false;
-    }
-    return true;
+    bool isMovable = isPlayerChecked(isWhiteTurn) == "";
+
+    // Undo moves
+    squares[coord1]->setPiece(p, isWhiteTurn, firstTurn);
+    squares[coord2]->setPiece(capturedPieceEnum, isWhiteTurn, firstTurn);
+
+    return isMovable;
   }
   return false;
 }
 
-// Checks if the black or white king is being checked. Returns "" if the king isn't
-//  being checks, and the coordinate if the piece that is checking the king if it is
-string Board::isChecked(bool isWhiteChecked) {
+// Checks if the black or white king is being checked.
+// Returns "" if the king isn't being checked, and the coordinate 
+//   of the piece that is checking the king if it is
+string Board::isPlayerChecked(bool isWhiteTurn) {
   ColourEnum colour;
   // Gets the coordinates of the black or white king
   string coord;
-  cout << "isChecked" << endl;
-  if (isWhiteChecked) {
+
+  if (isWhiteTurn) {
     colour = ColourEnum::White; 
     coord = whiteKingCoord;
   } else {
     colour = ColourEnum::Black; 
     coord = blackKingCoord;
   }
+
   // Gets the coordinates of possible checks by a knight
   Knight knight{colour};
   vector<vector<string>> knightChecks = knight.getValidMoves(coord, cols, rows, false);
@@ -341,17 +371,16 @@ string Board::isChecked(bool isWhiteChecked) {
         // Checks if the piece at the coordinate is an opposing knight
         Piece * piece = square->getPiece();
         if (piece != nullptr && piece->getColour() != colour) {
-          if (isWhiteChecked && piece->getPieceType() == PieceEnum::n) {
-            //cout << "n" << endl;
+          if (isWhiteTurn && piece->getPieceType() == PieceEnum::n) {
             return kcoord;
-          } else if (!isWhiteChecked && piece->getPieceType() == PieceEnum::N) {
-            //cout << "N" << endl;
+          } else if (!isWhiteTurn && piece->getPieceType() == PieceEnum::N) {
             return kcoord;
           }             
         }   
       }
     }
   }
+
   // Gets the coordinates of possible checks of the row and col the king is at
   Rook rook{colour};
   vector<vector<string>> vertHorzChecks = rook.getValidMoves(coord, cols, rows, false);
@@ -365,19 +394,19 @@ string Board::isChecked(bool isWhiteChecked) {
         //   rooks and queens can move horizontally/vertically
         if (piece != nullptr) {
           if (piece->getColour() != colour) {
-            if (isWhiteChecked) {
+            if (isWhiteTurn) {
               if (piece->getPieceType() == PieceEnum::r || piece->getPieceType() == PieceEnum::q)
                 return rcoord;
-            } else if (!isWhiteChecked) {
+            } else if (!isWhiteTurn) {
               if (piece->getPieceType() == PieceEnum::R || piece->getPieceType() == PieceEnum::Q)
                 return rcoord;
-            }   
+            }
           }          
         }   
       }
     }
   }
- // cout << "Color " << squares[coord]->getPiece()->getColour() << endl;
+
   // Gets the coordinates of possible checks of the diagonals the king is at
   Bishop bishop{colour};
   vector<vector<string>> diagonalChecks = bishop.getValidMoves(coord, cols, rows, false);
@@ -395,10 +424,10 @@ string Board::isChecked(bool isWhiteChecked) {
             // cout << bcoord << endl;
             // cout << piece->getPieceType();
             // cout << " Color " << piece->getColour() << endl;
-            if (isWhiteChecked) {
+            if (isWhiteTurn) {
               if (piece->getPieceType() == PieceEnum::b || piece->getPieceType() == PieceEnum::q)
                 return bcoord;
-            } else if (!isWhiteChecked) {
+            } else if (!isWhiteTurn) {
               if (piece->getPieceType() == PieceEnum::B || piece->getPieceType() == PieceEnum::Q)
                 return bcoord;
             } 
@@ -409,6 +438,7 @@ string Board::isChecked(bool isWhiteChecked) {
       }
     }
   }
+
   // Gets the coordinates of possible checks  by pawns
   int x = coord[0] - 97 + 1; // a, b, ..., g => 1, 2, ... 8
   int y = coord[1] - 49 + 1; // 1, 2, ..., 8
@@ -422,10 +452,10 @@ string Board::isChecked(bool isWhiteChecked) {
       // Checks if the piece at the coordinate is an opposing pawn
       Piece *piece = square->getPiece();
       if (piece != nullptr && piece->getColour() != colour) {
-        if (isWhiteChecked) {
+        if (isWhiteTurn) {
           if (piece->getPieceType() == PieceEnum::p)
             return coord;
-        } else if (!isWhiteChecked) {
+        } else if (!isWhiteTurn) {
           if (piece->getPieceType() == PieceEnum::P)
             return coord;
         }    
@@ -436,10 +466,10 @@ string Board::isChecked(bool isWhiteChecked) {
 }
 
 // Returns a vector of the coordinates that can help block/ stop the check
-vector<string> Board::possibleUncheckMoves(string checkCoord, bool isWhiteChecked) {
-  vector<string> possibleUncheckMoves;
+vector<string> Board::possibleUncheckMoves(string checkCoord, bool isWhiteTurn) {
+  vector<string> moves;
   string coord;
-  if (isWhiteChecked) {
+  if (isWhiteTurn) {
     coord = whiteKingCoord;
   } else {
     coord = blackKingCoord;
@@ -461,7 +491,7 @@ vector<string> Board::possibleUncheckMoves(string checkCoord, bool isWhiteChecke
     }
     // Gets the coordinates between the 2 points
     for (int i = 1; y1 + i <= y2; i++) {
-      possibleUncheckMoves.emplace_back(string(1, char(x1 + 96)) + to_string(y1 + i));
+      moves.emplace_back(string(1, char(x1 + 96)) + to_string(y1 + i));
     }
   } else if (y1 == y2) {
     // if y1 == y2, then theyre on the same column
@@ -473,7 +503,7 @@ vector<string> Board::possibleUncheckMoves(string checkCoord, bool isWhiteChecke
     }
     // gets the coordinates between the 2 pints
     for (int i = 1; x1 + i <= x2; i++) {
-      possibleUncheckMoves.emplace_back(string(1, char(x1 + 96) + i) + to_string(y1));
+      moves.emplace_back(string(1, char(x1 + 96) + i) + to_string(y1));
     }
   } else if (abs(x1 - x2) == abs(y1 - y2)) {
     // This means that theyre on a diagonal
@@ -494,7 +524,7 @@ vector<string> Board::possibleUncheckMoves(string checkCoord, bool isWhiteChecke
     int stopLoop = abs(x2 - x1);
     int i = 1;
     while (i <= stopLoop) {
-      possibleUncheckMoves.emplace_back(string(1, char(x1 + 96) + i1) + to_string(y1 + i2));
+      moves.emplace_back(string(1, char(x1 + 96) + i1) + to_string(y1 + i2));
       i1 += i1;
       i2 += i2;
       i++;
@@ -502,28 +532,29 @@ vector<string> Board::possibleUncheckMoves(string checkCoord, bool isWhiteChecke
   } else {
     // If the checkin piece is not on any vertical, horizontal or diagonal, then the checking piece
     //   must be a knight. Therefore, the only way to stop the check is by taking the knight
-    possibleUncheckMoves.emplace_back(checkCoord);
+    moves.emplace_back(checkCoord);
   }
-  return possibleUncheckMoves;
+  return moves;
 } 
 
+/**
+ * Todo: Calculate pseudo moves (castling + enpassant)
+ **/
 void Board::findAllValidMoves(bool firstTurn) { 
-  cout << "findAllValidMoves" << endl;
   vector<string> validWhiteMoves;
   vector<string> validWhiteKingMoves;
   vector<string> validBlackMoves; 
   vector<string> validBlackKingMoves;
-  vector<string> validCheckMoves;
+  vector<string> validCheckMoves; // moves to escape from checked position
   // Determines which colour's turn it is
   ColourEnum turnColour;
-  cout << isWhiteTurn << endl;
   if (isWhiteTurn) {
     turnColour = ColourEnum::White;
   } else {
     turnColour = ColourEnum::Black;
   }
   // Sees if the player's king is in check or not
-  string checkStatus = isChecked(isWhiteTurn);
+  string checkStatus = isPlayerChecked(isWhiteTurn);
   bool isChecked = checkStatus != "";
   if (isChecked) {
     // Gets the coordinates to stop the check
@@ -536,7 +567,7 @@ void Board::findAllValidMoves(bool firstTurn) {
       const string coord = string(1, col) + to_string(row);
       // Checks if there's a piece on the square
       Piece *piece = squares[coord]->getPiece();
-      // cout << coord << endl;
+
       if (piece != nullptr) {
         bool pieceIsWhite = piece->getColour() == ColourEnum::White;
         const PieceEnum pieceEnum = piece->getPieceType();
@@ -544,26 +575,23 @@ void Board::findAllValidMoves(bool firstTurn) {
         vector<vector<string>> allMoves = piece->getValidMoves(coord, cols, rows, firstTurn);
         // Filters out all the non-valid moves
         if (isChecked) {
+          // like flattenMoves except the only allowed moves are moves that stop the check
           flattenCheckedMoves(coord, pieceEnum,allMoves, validCheckMoves, 
                               piece->getColour(), validWhiteMoves, validBlackMoves);
         } else {
           flattenMoves(coord, pieceEnum, allMoves, piece->getColour(), validWhiteMoves, validBlackMoves);
         }
+
         if (pieceEnum == PieceEnum::K || pieceEnum == PieceEnum::k ) {
           // Iterates through all the possible moves
-          for (auto moves : allMoves) {
-            for (auto move : moves) {
-              // cout << move << endl;
+          for (auto movesDir : allMoves) {
+            for (auto move : movesDir) {
               Square *square = squares[move].get();
-              if (square != nullptr) {
-                Piece *othPiece = square->getPiece();
-                // Checks if the square is empty
-                if (othPiece != nullptr) {
-                  // Checks if the piece at the square is takeable
-                  if (othPiece->getColour() != piece->getColour()) {
-                    addMove(coord + " " + move, pieceIsWhite, validWhiteKingMoves, validBlackKingMoves);    
-                  }
-                } else {
+              if (square != nullptr) { // checks if square is valid on board
+                Piece *othPiece = square->getPiece(); // checks if there is a piece on the square
+                
+                // Checks if the King can take the square
+                if (othPiece == nullptr || othPiece->getColour() != piece->getColour()) {
                   addMove(coord + " " + move, pieceIsWhite, validWhiteKingMoves, validBlackKingMoves);    
                 }
               }
@@ -573,30 +601,21 @@ void Board::findAllValidMoves(bool firstTurn) {
       }
     }
   }
-  // for (auto move : validBlackKingMoves) {
-  //   cout << move << endl;
-  // }
-  // cout << "=======" << endl;
-  // for (auto move : validWhiteKingMoves) {
-  //   // cout << move << endl;
-  // }
+
   // Filters out any moves that will put their own king in check
   validWhiteKingMoves = filterKingMoves(validWhiteKingMoves, validBlackMoves);
   validBlackKingMoves = filterKingMoves(validBlackKingMoves, validWhiteMoves);
-  // for (auto move : validBlackKingMoves) {
-  //   cout << move << endl;
-  // }
+
+  // Combining king moves with moves from other pieces
   validWhiteMoves.insert(validWhiteMoves.end(), validWhiteKingMoves.begin(), validWhiteKingMoves.end());
   validBlackMoves.insert(validBlackMoves.end(), validBlackKingMoves.begin(), validBlackKingMoves.end());
 
+  // Check checkmate
+  // 1. no valid moves and currently checked
+  // 2. valid moves lead to another check and currently checked
+
   allValidMoves["white"] = validWhiteMoves;
-  // for (auto move : allValidMoves["black"]) {
-  //   cout << move << endl;
-  // }
   allValidMoves["black"] = validBlackMoves;
-  // for (auto move : allValidMoves["black"]) {
-  //   cout << move << endl;
-  // }
 }
 
 Board::~Board() {};
