@@ -18,6 +18,8 @@ class Xwindow {
   Xwindow(const Xwindow&) = delete;
   Xwindow &operator=(const Xwindow&) = delete;
 
+  void clearRow(int y);
+
   // Available colours.
   enum {White=0, Black, Red, Green, Blue, Cyan, Yellow, Magenta, Orange, Brown};
 

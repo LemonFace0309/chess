@@ -2,6 +2,7 @@
 #include <memory>
 #include <string>
 #include <map>
+#include <sstream>
 
 #include "game.h"
 #include "board.h"
@@ -37,6 +38,11 @@ Game::Game(Player p1, Player p2) {
   players[1] = p2;
 }
 
+void Game::printMessage(string msg) {
+  cout << msg << endl;
+  board->displayGraphicText(msg);
+}
+
 void Game::addPoints(ColourEnum winner, ColourEnum loser, bool stalemate) {
   int winnerPoints = stalemate ? 0.5 : 1;
   int loserPoints = stalemate ? 0.5 : 0;
@@ -46,22 +52,29 @@ void Game::addPoints(ColourEnum winner, ColourEnum loser, bool stalemate) {
 }
 
 void Game::printScore() {
+  string output = "Final Score:";
   cout << "Final Score:" << endl;
   for (auto &p : stringToColourEnum) {
     string colour = p.first;
     colour[0] = toupper(colour[0]);
-    cout << colour << ": " << score[p.second] << endl;
+    output += colour + ": " + to_string(score[p.second]) +", ";
+    cout << colour << ": " << to_string(score[p.second]) << endl;
   }
+  board->displayGraphicText(output);
 }
 
-void Game::setWinner(ColourEnum winner, ColourEnum loser, bool stalemate) {
-  cout << "Congratulations " << colourEnumToString[winner] << ", you won! 🥰" << endl;
+void Game::setWinner(ColourEnum winner, ColourEnum loser, bool stalemate) {  
+  ostringstream ss;
+  ss << "Congratulations " << colourEnumToString[winner] << ", you won! :)";
+  printMessage(ss.str());
   addPoints(winner, loser, stalemate);
   printScore();
   board->reset();
   cout << endl;
-  cout << "Now starting a new game" << endl;
+  string output = "Now starting a new game";
+  cout << output << endl;
   cout << endl;
+  board->displayGraphicText(output);
   board->render();
 }
 
@@ -103,7 +116,7 @@ void Game::start() {
 
 void Game::begin() {
   ColourEnum colour = isWhiteTurn ? ColourEnum::White :  ColourEnum::Black;
-  cout << "Let's begin our game! We'll start with " << colourEnumToString[colour] << endl;
+  printMessage("Let's begin our game! We'll start with " + colourEnumToString[colour]);
   int turns = 1;
 
   while (true) {
@@ -129,7 +142,7 @@ void Game::begin() {
         // checks for valid move on square
         validMove = board->isValidMove(coord1, coord2, turns <= 2);
         if (!validMove) {
-          cout << "Invalid Move!" << endl;
+           printMessage("Invalid Move!");
         }
       }
       board->move(coord1, coord2, turns <= 2);
@@ -138,7 +151,7 @@ void Game::begin() {
         setWinner(board->getWinner(), board->getLoser());
         turns = 0;
       } else {
-        cout << colourEnumToString[colour] << " move over! " << colourEnumToString[oppColour] << " turn now 😁" << endl;
+        printMessage(colourEnumToString[colour] + " move over! " + colourEnumToString[oppColour] + " turn now :D" );
       }
       ++turns;
     } else if (cmd == "resign") {
@@ -151,7 +164,7 @@ void Game::begin() {
       while (cin.peek() != '\n') {
         cin.ignore();
       }
-      cout << "Invalid Command!" << endl;
+      printMessage("Invalid Command!");
     }
     changeTurn(colour);
     colour = oppColour; // changes colour for next turn
@@ -239,7 +252,7 @@ void Game::setup() {
       while (cin.peek() != '\n') {
         cin.ignore();
       }
-      cout << "Invalid response!" << endl;
+      printMessage("Invalid response!");
     }
   }
 
@@ -255,7 +268,7 @@ void Game::changeTurn(ColourEnum c) {
       isWhiteTurn = false;
     }
   } catch(...) {
-    cout << "Invalid Colour!" << endl; 
+    printMessage("Invalid Colour!");
   }
 }
 

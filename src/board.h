@@ -4,6 +4,7 @@
 #include <map>
 #include <memory>
 
+#include "window.h"
 #include "subject.h"
 #include "square.h"
 #include "playerEnum.cc"
@@ -18,6 +19,7 @@ class Board : public Subject {
     // Player players[2];
     ColourEnum winner;
     ColourEnum loser;
+    std::shared_ptr<Xwindow> window;
     std::map<std::string, std::unique_ptr<Square>> squares;
     std::map<std::string, std::vector<std::string>> allValidMoves; // keys are "black" and "white"
     std::string lastAction; // coordinate 
@@ -47,6 +49,7 @@ class Board : public Subject {
     void setWinner(ColourEnum c);
     void render(); // renders the board
     void finishTurn(bool firstTurn = false); // ends the turn and renders the board
+    void displayGraphicText(std::string msg);
     ~Board();
 };
 #endif
