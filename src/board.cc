@@ -67,6 +67,10 @@ void Board::reset() {
   setDefaults();
 }
 
+void Board::setTurn(bool isWhiteTurn) {
+  isWhiteTurn = isWhiteTurn;
+}
+
 ColourEnum Board::getLoser() {
   return loser;
 }

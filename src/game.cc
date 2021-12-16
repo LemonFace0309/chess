@@ -103,6 +103,7 @@ void Game::start() {
 
 void Game::begin() {
   ColourEnum colour = isWhiteTurn ? ColourEnum::White :  ColourEnum::Black;
+  board->setTurn(isWhiteTurn);
   cout << "Let's begin our game! We'll start with " << colourEnumToString[colour] << endl;
   int turns = 1;
 
@@ -134,12 +135,17 @@ void Game::begin() {
       }
       board->move(coord1, coord2, turns <= 2);
       board->finishTurn(turns <= 2); // renders the board and calculates valid moves
-      if (board->getWinner() != ColourEnum::NO_COLOUR) {
+
+      if (board->getWinner() != ColourEnum::NO_COLOUR) { // checkmate!
         setWinner(board->getWinner(), board->getLoser());
         turns = 0;
-      } else {
+      } else { // outputting message for next user
         cout << colourEnumToString[colour] << " move over! " << colourEnumToString[oppColour] << " turn now 😁" << endl;
+        if (board->isPlayerChecked(oppColour) != "") {
+          cout << "Check! 😱😨😩" << colourEnumToString[oppColour] << " you king is threatened!";
+        }
       }
+
       ++turns;
     } else if (cmd == "resign") {
       board->setWinner(oppColour);
