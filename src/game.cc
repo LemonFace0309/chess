@@ -40,7 +40,7 @@ Game::Game(Player p1, Player p2) {
 
 void Game::printMessage(string msg) {
   cout << msg << endl;
-  board->displayGraphicText(msg);
+  // board->displayGraphicText(msg); // disable if not using graphics
 }
 
 void Game::addPoints(ColourEnum winner, ColourEnum loser, bool stalemate) {
